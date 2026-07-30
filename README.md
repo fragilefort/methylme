@@ -28,4 +28,7 @@ HackMD Tutorial: https://hackmd.io/c/tutorials/%2FUFLeoGd_SmGy8acWOTs6JA
 
 There are 1 master node and 5 worker nodes, the table above has both the CPU and the RAM for each node, the volume size is 4.9T. The tmp folder is located at `/vol/COMPEPIWS/tmp/`. 
 
+### Task 3 
+
+<img width="931" height="118" alt="Screenshot 2026-07-30 113519" src="https://github.com/user-attachments/assets/4681fac7-4eee-4338-8e80-0f932b7f5622" />
 
