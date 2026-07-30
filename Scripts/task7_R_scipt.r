@@ -4,7 +4,7 @@ library(ggplot2)
 library(tidyverse)
 library(GenomicRanges)
 
-# ===== Load Data (paths from your cluster directory) =====
+# ===== Load Data =====
 liver <- read.table("/vol/COMPEPIWS/groups/shared/liver_14.5_mouse_1_2kbW_bed_counts.txt", header = TRUE)
 kidney <- read.table("/vol/COMPEPIWS/groups/shared/kidney_14.5_mouse_1_2kbW_bed_counts.txt", header = TRUE)
 
@@ -37,7 +37,7 @@ long_df <- melt(combined_df[, !(names(combined_df) %in% c("Chr", "Start", "End")
                  value.name = "value")
 dim(long_df)
 
-## Q10: Density plot per variable, faceted by cell_type, transparent colors, save as PDF
+## Q10: Density plot per variable, faceted by cell_type, transparent colors
 density_plot <- ggplot(long_df, aes(x = value, fill = variable)) +
   geom_density(alpha = 0.5) +
   facet_wrap(~cell_type) +
@@ -47,7 +47,7 @@ density_plot <- ggplot(long_df, aes(x = value, fill = variable)) +
 
 ggsave("density_plot.pdf", plot = density_plot, width = 10, height = 6)
 
-## Q11: Re-plot with x-axis limited to 100, save as PDF
+## Q11: Re-plot with x-axis limited to 100
 density_plot_xlim <- density_plot + xlim(0, 100)
 
 ggsave("density_plot_xlim100.pdf", plot = density_plot_xlim, width = 10, height = 6)
@@ -100,10 +100,6 @@ loadings_plot <- ggplot(loadings_df, aes(x = PC1, y = PC2, label = variable)) +
 
 ggsave("pc_loadings_plot.pdf", plot = loadings_plot, width = 8, height = 6)
 
-
-# =====================================================
-# ===== NEW SECTION: GenomicRanges Tasks =====
-# =====================================================
 
 ## 1. Create two GRanges objects from liver and kidney data frames
 ## columns 4,5,6 (H3K27me3, H3K36me3, H3K9me3) as metadata
