@@ -118,14 +118,15 @@ Q8 — Dimension of the new (vertically concatenated) data frame
  the original 6.
 
 The density plots:
+<img width="2000" height="1200" alt="image" src="https://github.com/user-attachments/assets/d9677325-ef09-44e2-86ca-d0f905ca2425" />
+<img width="2000" height="1200" alt="image" src="https://github.com/user-attachments/assets/2a281e3c-8f76-4efd-af38-cf6133c613d1" />
 
--
--
 
 Q16 -  scree plot and cumulative plot 
 
--
--
+<img width="2000" height="1500" alt="image" src="https://github.com/user-attachments/assets/7bb9c0d6-34e5-4788-a7c4-85f52f4c9c23" />
+<img width="2000" height="1500" alt="image" src="https://github.com/user-attachments/assets/01fc194c-3780-4e78-a9ab-143eb7f85246" />
+
 
 Q17 - 
 
@@ -149,6 +150,9 @@ PC2: Splits the marks by type, not tissue. H3K36me3 loads strongly negative in b
 while H3K27me3 and H3K9me3 both load positively (~0.18–0.31) in both tissues.
  This means PC2 separates H3K36me3 (a mark typically associated with active transcription) from the two repressive marks (H3K27me3, H3K9me3),
  regardless of which tissue the signal came from.
+
+
+<img width="2000" height="1500" alt="image" src="https://github.com/user-attachments/assets/0f321366-0a04-4894-aaa5-704196de05e2" />
 
 ## Genomic ranges
 
