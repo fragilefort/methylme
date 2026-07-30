@@ -32,3 +32,9 @@ There are 1 master node and 5 worker nodes, the table above has both the CPU and
 
 <img width="931" height="118" alt="Screenshot 2026-07-30 113519" src="https://github.com/user-attachments/assets/4681fac7-4eee-4338-8e80-0f932b7f5622" />
 
+### Task 4
+
+<img width="1895" height="538" alt="Screenshot 2026-07-30 114751" src="https://github.com/user-attachments/assets/d62ed496-f21b-4eac-9161-7f3cfff14322" />
+
+
+
