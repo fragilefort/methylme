@@ -92,3 +92,79 @@ Submitted batch job 23694
              23680   compepi   test_1 ibha0000  R       0:04      1 bibigrid-worker-aorkgacx5hn960m-1
              23681   compepi   test_2 ibha0000  R       0:04      1 bibigrid-worker-aorkgacx5hn960m-1
              23682   compepi   test_3 ibha0000  R       0:04      1 bibigrid-worker-aorkgacx5hn960m-1
+# Task 7
+
+Q4
+
+Table	Rows	Columns
+Liver	1,362,728	6
+Kidney	1,362,728	6
+
+Q5 — Column names of each table
+
+Both tables share the exact same column names:
+
+text
+"Chr"  "Start"  "End"  "H3K27me3"  "H3K36me3"  "H3K9me3"
+
+Q6 — Genome length from each dataset
+
+Both liver and kidney give the same total: 2,725,456,000 bp (~2.73 Gb), consistent with the mouse genome (mm10 build), calculated as the sum
+ of (End - Start) across all 2kb bins.
+
+Q8 — Dimension of the new (vertically concatenated) data frame
+
+2,725,456 rows × 7 columns — exactly double the row count of one table (1,362,728 × 2), plus one extra column (cell_type) added on top of
+ the original 6.
+
+The density plots:
+
+-
+-
+
+Q16 -  scree plot and cumulative plot 
+
+-
+-
+
+Q17 - 
+
+6 variables × 6 components = 36 individual loading values, organized as a 6×6 matrix rather than a flat list.
+
+Q18 PC1 vs PC2 loadings interpretation
+
+Variable	PC1	PC2
+H3K27me3_liver	0.394	0.314
+H3K36me3_liver	0.350	-0.624
+H3K9me3_liver	0.391	0.241
+H3K27me3_kidney	0.449	0.310
+H3K36me3_kidney	0.386	-0.572
+H3K9me3_kidney	0.468	0.175
+
+
+PC1: All six variables load positively with similar magnitude (0.35–0.47), meaning PC1 captures overall signal intensity shared across all
+ three histone marks in both tissues — it doesn't distinguish between marks or tissues, just represents a general "high vs low signal" axis.
+
+PC2: Splits the marks by type, not tissue. H3K36me3 loads strongly negative in both liver (-0.62) and kidney (-0.57), 
+while H3K27me3 and H3K9me3 both load positively (~0.18–0.31) in both tissues.
+ This means PC2 separates H3K36me3 (a mark typically associated with active transcription) from the two repressive marks (H3K27me3, H3K9me3),
+ regardless of which tissue the signal came from.
+
+## Genomic ranges
+
+Q2 — Total number of bases covered
+
+Two different interpretations were computed:
+
+Method	Liver	Kidney
+Sum of all range widths (sum(width(gr)))	2,726,818,728	2,726,818,728
+Sum of widths after merging overlaps (sum(width(reduce(gr))))	2,725,456,021	2,725,456,021
+
+
+Q5 — Overlapping regions between liver and kidney
+
+text
+findOverlaps(liver_gr, kidney_gr) → 4,088,142 hits
+pintersect(...) → GRanges with 4,088,142 overlapping regions
+
+
