@@ -171,6 +171,9 @@ text
 findOverlaps(liver_gr, kidney_gr) → 4,088,142 hits
 pintersect(...) → GRanges with 4,088,142 overlapping regions
 
+
+# Day 2
+
 # Pipeline
 ## 1. Main steps of the pipelines
 
@@ -181,3 +184,6 @@ pintersect(...) → GRanges with 4,088,142 overlapping regions
 - Extract methylation calls
 - Sample report
 - Alignment QC
+
+## 2 a) The data is single end 
+## b) the mapper used is bismark 
