@@ -171,4 +171,13 @@ text
 findOverlaps(liver_gr, kidney_gr) → 4,088,142 hits
 pintersect(...) → GRanges with 4,088,142 overlapping regions
 
+# Pipeline
+## 1. Main steps of the pipelines
 
+- Quality control
+- Read trimming
+- Read alignment
+- Deduplicate Alignments
+- Extract methylation calls
+- Sample report
+- Alignment QC
