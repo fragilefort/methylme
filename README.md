@@ -185,5 +185,6 @@ pintersect(...) → GRanges with 4,088,142 overlapping regions
 - Sample report
 - Alignment QC
 
-## 2 a) The data is single end 
-## b) the mapper used is bismark 
+## 2 
+- a) The data is single end 
+- b) the mapper used is bismark 
