@@ -152,7 +152,7 @@ while H3K27me3 and H3K9me3 both load positively (~0.18–0.31) in both tissues.
  regardless of which tissue the signal came from.
 
 
-<img width="2000" height="1500" alt="image" src="https://github.com/user-attachments/assets/0f321366-0a04-4894-aaa5-704196de05e2" />
+<img width="2000" height="1555" alt="image" src="https://github.com/user-attachments/assets/83242506-4b03-4cbc-84f2-d2ca39b1bae8" />
 
 ## Genomic ranges
 
