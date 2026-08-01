@@ -1,6 +1,7 @@
 # ===== Libraries =====
 library(reshape2)
 library(ggplot2)
+library(ggrepel)
 library(tidyverse)
 library(GenomicRanges)
 
@@ -89,16 +90,20 @@ dim(pca_result$rotation)
 ## Q18: Plot PC1 and PC2 loadings
 loadings_df <- as.data.frame(pca_result$rotation)
 loadings_df$variable <- rownames(loadings_df)
+loadings_df$mark <- sub("_.*", "", loadings_df$variable)     
+loadings_df$tissue <- sub(".*_", "", loadings_df$variable)  
 
-loadings_plot <- ggplot(loadings_df, aes(x = PC1, y = PC2, label = variable)) +
-  geom_point(size = 3, color = "darkred") +
-  geom_text(vjust = -0.5) +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  geom_vline(xintercept = 0, linetype = "dashed") +
-  labs(title = "PC1 vs PC2 Loadings") +
-  theme_minimal()
+loadings_plot <- ggplot(loadings_df, aes(x = PC1, y = PC2, color = mark, shape = tissue, label = variable)) +
+  geom_point(size = 4, alpha = 0.85) +
+  geom_text_repel(size = 4, show.legend = FALSE, max.overlaps = 20, box.padding = 0.6) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
+  scale_color_manual(values = c("H3K27me3" = "#E63946", "H3K36me3" = "#2A9D8F", "H3K9me3" = "#457B9D")) +
+  labs(title = "PC1 vs PC2 Loadings", color = "Histone mark", shape = "Tissue") +
+  theme_minimal(base_size = 13) +
+  theme(plot.title = element_text(face = "bold", hjust = 0.5))
 
-ggsave("pc_loadings_plot.pdf", plot = loadings_plot, width = 8, height = 6)
+ggsave("pc_loadings_plot.pdf", plot = loadings_plot, width = 9, height = 7)
 
 
 ## 1. Create two GRanges objects from liver and kidney data frames
