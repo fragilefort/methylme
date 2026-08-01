@@ -164,7 +164,7 @@ Restricting the x-axis to 0–100 makes the main part of the distributions easie
 
 <img width="2000" height="1500" alt="Cumulative scree plot" src="https://github.com/user-attachments/assets/01fc194c-3780-4e78-a9ab-143eb7f85246" />
 
-The scree plot shows a steep decrease after PC1 and PC2, followed by much smaller contributions from PC3 to PC6. PC1 explains **50.63%** of the variance and PC2 explains **23.28%**. Together, PC1 and PC2 explain about **73.91%** of the total variance, so a two-dimensional PC1-versus-PC2 view captures most of the variation in these six variables.
+Applying the elbow method to both graphs where we take into account the PCA components until the variance becomes stabilized ( no longer changes much between PC), we can take the first 3 PC as together they represent approximately  **90%** of the total variance. 
 
 #### Q17 — Principal-component loadings
 
