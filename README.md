@@ -15,8 +15,11 @@ output:
 tags: wgbs
 HackMD Tutorial: https://hackmd.io/c/tutorials/%2FUFLeoGd_SmGy8acWOTs6JA
 ---
+
 ## Day 1
+
 ### System arc
+
 | Node | CPUs | Memory |
 | :--- | :---: | :---: |
 | **bibigrid-master-aorkgacx5hn960m** | 2 | 2000 |
@@ -26,9 +29,9 @@ HackMD Tutorial: https://hackmd.io/c/tutorials/%2FUFLeoGd_SmGy8acWOTs6JA
 | **bibigrid-worker-aorkgacx5hn960m-3** | 14 | 112000 |
 | **bibigrid-worker-aorkgacx5hn960m-4** | 14 | 112000 |
 
-There are 1 master node and 5 worker nodes, the table above has both the CPU and the RAM for each node, the volume size is 4.9T. The tmp folder is located at `/vol/COMPEPIWS/tmp/`. 
+There is one master node and five worker nodes. The table above shows the available CPUs and RAM for each node. The shared volume size is 4.9T, and the temporary directory is located at `/vol/COMPEPIWS/tmp/`.
 
-### Task 3 
+### Task 3
 
 <img width="931" height="118" alt="Screenshot 2026-07-30 113519" src="https://github.com/user-attachments/assets/4681fac7-4eee-4338-8e80-0f932b7f5622" />
 
@@ -36,24 +39,29 @@ There are 1 master node and 5 worker nodes, the table above has both the CPU and
 
 <img width="1895" height="538" alt="Screenshot 2026-07-30 114751" src="https://github.com/user-attachments/assets/d62ed496-f21b-4eac-9161-7f3cfff14322" />
 
-##number of lines equal: 
-58239 
+#### Number of lines
 
-## number of exon entries:
+58239
+
+#### Number of exon entries
 
 24556
 
-## number of exons longer than 1000bp :
+#### Number of exons longer than 1000 bp
+
 1663
 
-## number of exons where gene_id is "Sox17":
+#### Number of exons where gene_id is "Sox17"
+
 0
 
-## Count exons in chr2 :
-0  
+#### Count of exons in chr2
 
-## frequency of each feature type in column 3:
+0
 
+#### Frequency of each feature type in column 3
+
+```
    2260 3UTR
    3363 5UTR
   21278 CDS
@@ -61,14 +69,21 @@ There are 1 master node and 5 worker nodes, the table above has both the CPU and
    2146 start_codon
    2139 stop_codon
    2497 transcript
-### The new sorted file:
+```
+
+#### Example lines from the new sorted file
+
+```
 chr18   refGene 3UTR    10064401        10066047        .       -       .       gene_id "Rock1"; transcript_id "NM_009071"; exon_number "1"; exon_id "NM_009071.1"; gene_name "Rock1";
 chr18   refGene 3UTR    10560484        10562941        .       +       .       gene_id "Greb1l"; transcript_id "NM_001083628"; exon_number "33"; exon_id "NM_001083628.33"; gene_name "Greb1l";
-chr18   refGene 3UTR    10566512        10567498        .       -       .       gene_id "Esco1"; transcript_id "NM_001081222"; exon_number "1"; 
+chr18   refGene 3UTR    10566512        10567498        .       -       .       gene_id "Esco1"; transcript_id "NM_001081222"; exon_number "1";
+```
 
-# Task 6
+### Task 6
 
-done
+The jobs were submitted successfully:
+
+```
 Submitted batch job 23680
 Submitted batch job 23681
 Submitted batch job 23682
@@ -84,93 +99,113 @@ Submitted batch job 23691
 Submitted batch job 23692
 Submitted batch job 23693
 Submitted batch job 23694
+```
 
-  JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
-             23692   compepi  test_13 ibha0000  R       0:03      1 bibigrid-worker-aorkgacx5hn960m-1
-             23693   compepi  test_14 ibha0000  R       0:03      1 bibigrid-worker-aorkgacx5hn960m-1
-             23694   compepi  test_15 ibha0000  R       0:03      1 bibigrid-worker-aorkgacx5hn960m-2
-             23680   compepi   test_1 ibha0000  R       0:04      1 bibigrid-worker-aorkgacx5hn960m-1
-             23681   compepi   test_2 ibha0000  R       0:04      1 bibigrid-worker-aorkgacx5hn960m-1
-             23682   compepi   test_3 ibha0000  R       0:04      1 bibigrid-worker-aorkgacx5hn960m-1
-# Task 7
+Example running jobs:
 
-Q4
+```
+JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+23692 compepi  test_13 ibha0000  R       0:03      1 bibigrid-worker-aorkgacx5hn960m-1
+23693 compepi  test_14 ibha0000  R       0:03      1 bibigrid-worker-aorkgacx5hn960m-1
+23694 compepi  test_15 ibha0000  R       0:03      1 bibigrid-worker-aorkgacx5hn960m-2
+23680 compepi   test_1 ibha0000  R       0:04      1 bibigrid-worker-aorkgacx5hn960m-1
+23681 compepi   test_2 ibha0000  R       0:04      1 bibigrid-worker-aorkgacx5hn960m-1
+23682 compepi   test_3 ibha0000  R       0:04      1 bibigrid-worker-aorkgacx5hn960m-1
+```
 
-Table	Rows	Columns
-Liver	1,362,728	6
-Kidney	1,362,728	6
+### Task 7
 
-Q5 — Column names of each table
+The liver and kidney bed-count tables were loaded into R and checked before continuing with the analysis.
 
-Both tables share the exact same column names:
+#### Q4 — Table dimensions
 
-text
+| Table | Rows | Columns |
+|---|---:|---:|
+| Liver | 1,362,728 | 6 |
+| Kidney | 1,362,728 | 6 |
+
+Both tables have the same dimensions. This is expected because liver and kidney were measured using the same genome-wide 2 kb binning scheme.
+
+#### Q5 — Column names
+
+Both tables have the same column names:
+
+```
 "Chr"  "Start"  "End"  "H3K27me3"  "H3K36me3"  "H3K9me3"
+```
 
-Q6 — Genome length from each dataset
+Each row represents one genomic bin. The first three columns describe its genomic position, while the last three columns contain the signal values for the histone marks.
 
-Both liver and kidney give the same total: 2,725,456,000 bp (~2.73 Gb), consistent with the mouse genome (mm10 build), calculated as the sum
- of (End - Start) across all 2kb bins.
+#### Q6 — Genome length
 
-Q8 — Dimension of the new (vertically concatenated) data frame
+The genome length was calculated by summing `End - Start` across all bins. Both datasets gave **2,725,456,000 bp** (approximately **2.73 Gb**). The same result for liver and kidney is expected because both datasets cover the same mouse genome bins.
 
-2,725,456 rows × 7 columns — exactly double the row count of one table (1,362,728 × 2), plus one extra column (cell_type) added on top of
- the original 6.
+#### Q8 — Dimensions after vertical concatenation
 
-The density plots:
-<img width="2000" height="1200" alt="image" src="https://github.com/user-attachments/assets/d9677325-ef09-44e2-86ca-d0f905ca2425" />
-<img width="2000" height="1200" alt="image" src="https://github.com/user-attachments/assets/2a281e3c-8f76-4efd-af38-cf6133c613d1" />
+After adding a `cell_type` column and combining the liver and kidney tables with `rbind()`, the resulting data frame had **2,725,456 rows and 7 columns**. The number of rows doubled because both datasets were stacked, and the extra column stores whether each row comes from liver or kidney.
 
+#### Q9 — Dimensions after reshaping to long format
 
-Q16 -  scree plot and cumulative plot 
+After reshaping the three histone-mark columns from wide to long format, the data frame had **8,176,368 rows and 3 columns**. Each original row now occurs three times: once for H3K27me3, once for H3K36me3, and once for H3K9me3.
 
-<img width="2000" height="1500" alt="image" src="https://github.com/user-attachments/assets/7bb9c0d6-34e5-4788-a7c4-85f52f4c9c23" />
-<img width="2000" height="1500" alt="image" src="https://github.com/user-attachments/assets/01fc194c-3780-4e78-a9ab-143eb7f85246" />
+#### Q10 and Q11 — Density plots
 
+<img width="2000" height="1200" alt="Density plot, full x-axis range" src="https://github.com/user-attachments/assets/d9677325-ef09-44e2-86ca-d0f905ca2425" />
 
-Q17 - 
+<img width="2000" height="1200" alt="Density plot, x-axis restricted to 0-100" src="https://github.com/user-attachments/assets/2a281e3c-8f76-4efd-af38-cf6133c613d1" />
 
-6 variables × 6 components = 36 individual loading values, organized as a 6×6 matrix rather than a flat list.
+The first density plot is strongly right-skewed: most genomic bins have very low signal values, while a small number of bins have high values and form a long right-hand tail. This is expected for genome-wide histone-mark data because these marks are enriched at specific genomic regions rather than uniformly distributed across the genome.
 
-Q18 PC1 vs PC2 loadings interpretation
+Restricting the x-axis to 0–100 makes the main part of the distributions easier to see. The three marks have different shapes, showing that they are distributed differently across genomic bins. The liver and kidney panels have broadly similar overall distributions, suggesting that the major differences between tissues are likely to be at particular genomic loci rather than a large global shift in all bins.
 
-Variable	PC1	PC2
-H3K27me3_liver	0.394	0.314
-H3K36me3_liver	0.350	-0.624
-H3K9me3_liver	0.391	0.241
-H3K27me3_kidney	0.449	0.310
-H3K36me3_kidney	0.386	-0.572
-H3K9me3_kidney	0.468	0.175
+#### Q16 — Scree plot and cumulative scree plot
 
+<img width="2000" height="1500" alt="Scree plot" src="https://github.com/user-attachments/assets/7bb9c0d6-34e5-4788-a7c4-85f52f4c9c23" />
 
-PC1: All six variables load positively with similar magnitude (0.35–0.47), meaning PC1 captures overall signal intensity shared across all
- three histone marks in both tissues — it doesn't distinguish between marks or tissues, just represents a general "high vs low signal" axis.
+<img width="2000" height="1500" alt="Cumulative scree plot" src="https://github.com/user-attachments/assets/01fc194c-3780-4e78-a9ab-143eb7f85246" />
 
-PC2: Splits the marks by type, not tissue. H3K36me3 loads strongly negative in both liver (-0.62) and kidney (-0.57), 
-while H3K27me3 and H3K9me3 both load positively (~0.18–0.31) in both tissues.
- This means PC2 separates H3K36me3 (a mark typically associated with active transcription) from the two repressive marks (H3K27me3, H3K9me3),
- regardless of which tissue the signal came from.
+The scree plot shows a steep decrease after PC1 and PC2, followed by much smaller contributions from PC3 to PC6. PC1 explains **50.63%** of the variance and PC2 explains **23.28%**. Together, PC1 and PC2 explain about **73.91%** of the total variance, so a two-dimensional PC1-versus-PC2 view captures most of the variation in these six variables.
 
+#### Q17 — Principal-component loadings
 
-<img width="2000" height="1555" alt="image" src="https://github.com/user-attachments/assets/83242506-4b03-4cbc-84f2-d2ca39b1bae8" />
+The PCA loading matrix has dimensions **6 x 6**. There are therefore **36 loading values** in total: each of the six original variables has one loading for each of the six principal components.
 
-## Genomic ranges
+#### Q18 — PC1 and PC2 loadings
 
-Q2 — Total number of bases covered
+| Variable | PC1 | PC2 |
+|---|---:|---:|
+| H3K27me3_liver | 0.394 | 0.314 |
+| H3K36me3_liver | 0.350 | -0.624 |
+| H3K9me3_liver | 0.391 | 0.241 |
+| H3K27me3_kidney | 0.449 | 0.310 |
+| H3K36me3_kidney | 0.386 | -0.572 |
+| H3K9me3_kidney | 0.468 | 0.175 |
 
-Two different interpretations were computed:
+<img width="2000" height="1555" alt="PC1 versus PC2 loadings" src="https://github.com/user-attachments/assets/83242506-4b03-4cbc-84f2-d2ca39b1bae8" />
 
-Method	Liver	Kidney
-Sum of all range widths (sum(width(gr)))	2,726,818,728	2,726,818,728
-Sum of widths after merging overlaps (sum(width(reduce(gr))))	2,725,456,021	2,725,456,021
+All six variables have positive PC1 loadings of a similar size (approximately 0.35–0.47). PC1 therefore represents a general signal-intensity axis rather than separating liver from kidney or one histone mark from another.
 
+PC2 separates H3K36me3 from the two other marks. H3K36me3 has strong negative PC2 loadings in both liver and kidney, whereas H3K27me3 and H3K9me3 have positive PC2 loadings. In this dataset, PC2 mainly distinguishes the H3K36me3 signal pattern from the patterns of H3K27me3 and H3K9me3. The liver and kidney versions of the same mark are located close to each other, indicating that mark type contributes more strongly than tissue type to this PCA separation.
 
-Q5 — Overlapping regions between liver and kidney
+### Genomic Ranges
 
-text
-findOverlaps(liver_gr, kidney_gr) → 4,088,142 hits
-pintersect(...) → GRanges with 4,088,142 overlapping regions
+#### Q2 — Total bases covered
 
+| Method | Liver | Kidney |
+|---|---:|---:|
+| Sum of all range widths: `sum(width(gr))` | 2,726,818,728 | 2,726,818,728 |
+| Non-redundant coverage after `reduce()`: `sum(width(reduce(gr)))` | 2,725,456,021 | 2,725,456,021 |
+
+The raw total adds the width of every range. The reduced total first merges overlapping or adjacent ranges, then calculates the total width. The two values are very similar, indicating that the 2 kb genomic bins are largely non-overlapping. The small difference results from ranges that touch or overlap and are merged by `reduce()`.
+
+#### Q5 — Overlaps between liver and kidney ranges
+
+```
+findOverlaps(liver_gr, kidney_gr) -> 4,088,142 hits
+pintersect(...) -> GRanges with 4,088,142 overlapping regions
+```
+
+The number of hits is larger than the number of bins in one dataset because `findOverlaps()` considers ranges that share a boundary position as overlapping. Since adjacent bins use an end coordinate equal to the next bin's start coordinate, a liver bin can match its corresponding kidney bin and neighbouring bins. This reflects the interval definition used by the function, rather than a biological difference between liver and kidney.
 
 # Day 2
 
