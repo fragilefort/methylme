@@ -9,10 +9,12 @@ id.column <- "sampleId"
 rnb.options(
     assembly = "mm10",
     identifiers.column = id.column,
-    import.default.data.type = "bs.bed.dir",
+
     import.bed.style = "bismarkCov",
+
     differential.comparison.columns = "tissue",
     differential.report.sites = FALSE,
+
     filtering.coverage.threshold = 10,
     filtering.low.coverage.masking = TRUE,
     filtering.high.coverage.outliers = TRUE,
