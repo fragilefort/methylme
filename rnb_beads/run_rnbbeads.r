@@ -7,12 +7,12 @@ sample.sheet <- "/vol/COMPEPIWS/groups/wgbs2/methylme/rnb_beads/sample_annotatio
 rnb.options(
     assembly = "mm10",
     import.bed.style = "bismarkCov",
-    differential.comparison.columns = c("tissue"),
+    differential.comparison.columns = "tissue",
     differential.report.sites = FALSE,
     filtering.coverage.threshold = 10,
     filtering.low.coverage.masking = TRUE,
     filtering.high.coverage.outliers = TRUE,
-    filtering.missing.value.quantile = 1,
+    filtering.missing.value.quantile = 1
 )
 
 rnb.run.analysis(
