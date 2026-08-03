@@ -16,8 +16,7 @@ rnb.options(
     filtering.coverage.threshold = 10,
     filtering.low.coverage.masking = TRUE,
     filtering.high.coverage.outliers = TRUE,
-    filtering.missing.value.quantile = 0,
-    num.cores = 12
+    filtering.missing.value.quantile = 0
 )
 
 ds <- list(
