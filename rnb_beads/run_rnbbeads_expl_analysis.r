@@ -596,6 +596,14 @@ save.rnb.set(
 
 print(summarized.regions(rnb.set))
 
+# Tell R where the zip executable is.
+# Run this once in this R session before save.rnb.set().
+Sys.setenv(
+    R_ZIPCMD = "/vol/COMPEPIWS/conda/miniconda3/envs/core/bin/zip"
+)
+
+# Optional check: should print TRUE
+print(file.exists(Sys.getenv("R_ZIPCMD")))
 # Save a NEW object; the original rnbSet_preprocessed remains unchanged.
 rnb.set.mystery.file <- file.path(
     report.dir,
