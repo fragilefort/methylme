@@ -223,3 +223,22 @@ The number of hits is larger than the number of bins in one dataset because `fin
 ## 2 
 - a) The data is single end 
 - b) the mapper used is bismark 
+
+# Day 3
+## 1.3 Quality control
+### fastqc report
+- Which read length was used in the sequencing? 
+Read length is about 150 bp
+- What does Per-base sequence quality tell you? How many samples fail this check? If any, why? 
+It tells us the number of reads with average quality scores. Shows if a subset of reads has poor quality. Zero samples fails this test.
+- What does Per-base sequence content tell you? How many samples fail this check? If any, why? 
+It tells us the proportion of each base position for which each of the four normal DNA bases has been called. All samples actually fail this check due to the bias towards the high propertion of thymine at each position. This makes sense because all the unmethylated cytosines are read as thymines after bisulfite treatment.
+
+### samtools stats for deduplicated reads
+- Run samtools flagstats for each BAM file and report how many reads were aligned.
+```
+liver_14.5.1_trimmed_bismark_bt2.deduplicated.bam : 48411840 + 0 mapped 
+liver_14.5.2_trimmed_bismark_bt2.deduplicated.bam : 49586255 + 0 mapped
+liver_15.5.1_trimmed_bismark_bt2.deduplicated.bam : 43031256 + 0 mapped 
+liver_15.5.2_trimmed_bismark_bt2.deduplicated.bam : 38484289 + 0 mapped 
+```
