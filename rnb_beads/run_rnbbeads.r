@@ -18,8 +18,7 @@ rnb.options("filtering.missing.value.quantile" = 1)
 
 rnb.run.analysis(
     dir.reports = report.dir,
-    sample.sheet = sample.sheet,
-    data.dir = data.dir,
+    data.source = c(sample.sheet, data.dir),
     data.type = "data.dir",
     initialize.reports = FALSE
 )
