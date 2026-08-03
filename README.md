@@ -283,3 +283,35 @@ Kidney tissue samples has more overall methylatio rate at the CpG context with c
   - As we can see in those 2 screenshots we found both a hypomethylated and hypermethylated promoter respectively:
   <img width="1626" height="818" alt="Screenshot 2026-08-03 123058" src="https://github.com/user-attachments/assets/e37c85a3-f0c5-40d4-b85d-c84e8ca600e6" />
   <img width="1787" height="751" alt="Screenshot 2026-08-03 124946" src="https://github.com/user-attachments/assets/6b8b6f21-c476-471c-9c78-d67f950c4e84" />
+
+### RnBeads 
+#### Data import
+- Which genome assembly was used? mm10 
+- How many CpG sites with methylation calls were annotated in the dataset? 1248150
+#### Quality control 
+- Look at the coverage information. Were there any samples that had signifciantly fewer CpGs covered or the read depth per CpG was significantly lower? No, none of the samples show significantly lower CpG coverage or read depth
+
+#### Preprocessing 
+- What flitering steps were applied? 
+    * SNP Removal: Removed 85,372 sites that overlap with single-nucleotide polymorphisms (SNPs).
+    * High Coverage Outliers: Checked for sites exceeding 50 times the 0.95-quantile of coverage values (0 sites removed).
+    * Low Coverage Masking: Masked 394,214 sites with a coverage depth of less than 10 by setting them to NA.
+    * Sex Chromosomes: Checked for sites located on sex chromosomes (0 sites removed).
+    * Missing Value Filtering: Removed 117,698 sites containing any missing values (more than 0% missing across samples).
+- How many CpGs survived the filtering? Out of 1,248,150 total sites, 203,070 sites were removed, leaving 1,045,080 sites
+Yes, the removed CpGs have a massive spike at zero methylation (0% methylated), whereas the retained CpGs are mostly highly methylated (around 90% methylated).
+
+#### Differential methylation 
+- Inspect difefrential methylation between kidney and liver. Which tissue generally exhibits higher methylation levels? Kidney generally exhibits higher methylation levels.
+- In which type of genomic regions do you see the largest differences? Promoters
+- Inspect the table of difefrentially methylated promoters. What does the combinedRank column mean? The combinedRank column evaluates overall differential methylation by assigning a promoter its worst (highest) rank across absolute difference, relative fold-change, and statistical significance, ensuring top-ranked regions is doing well across all three metrics.
+
+- List the names of the top 5 differentially methylated promoters (according to combinedRank). Are they hypomethylated or hypermethylated in kidney compared to liver? 
+
+1. 5830416P10Rik (ENSMUSG00000097636)
+2. Olfr1425 (ENSMUSG00000067526)
+3. Anxa1 (ENSMUSG00000024659)
+4. Ms4a6c (ENSMUSG00000079419)
+5. Cyp26c1 (ENSMUSG00000062432)
+
+Summary: Four of the top five promoters (5830416P10Rik, Olfr1425, Anxa1, and Ms4a6c) are hypermethylated in kidney compared to liver, while one promoter (Cyp26c1) is hypomethylated in kidney compared to liver.
