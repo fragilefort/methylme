@@ -250,4 +250,27 @@ kidney_15.5.2_trimmed_bismark_bt2.deduplicated.bam : 43080895 + 0 mapped
 ### Mthylation calls
 - Count how many cytosines were called in each sample.
 
+```
+methylation_coverage/kidney_14.5.1_trimmed_bismark_bt2.deduplicated.bismark.cov.gz: 2459863
+methylation_coverage/kidney_14.5.2_trimmed_bismark_bt2.deduplicated.bismark.cov.gz: 2456188
+methylation_coverage/kidney_15.5.1_trimmed_bismark_bt2.deduplicated.bismark.cov.gz: 2480893
+methylation_coverage/kidney_15.5.2_trimmed_bismark_bt2.deduplicated.bismark.cov.gz: 2489813
 
+methylation_coverage/liver_14.5.1_trimmed_bismark_bt2.deduplicated.bismark.cov.gz: 2460789
+methylation_coverage/liver_14.5.2_trimmed_bismark_bt2.deduplicated.bismark.cov.gz: 2461990
+methylation_coverage/liver_15.5.1_trimmed_bismark_bt2.deduplicated.bismark.cov.gz: 2453361
+methylation_coverage/liver_15.5.2_trimmed_bismark_bt2.deduplicated.bismark.cov.gz: 2451935
+```
+
+### Multiqc report
+- Check the mapping efficiencies for all samples. Are the efficiencies reasonable? Is there any substantial difference between the samples? 
+Yes the efficinecy are reasonable, almost all reads are aligned uniquely, with little no. of reads are abmiguous or not aligned. This is consitient across all samples in liver and kidney.
+
+- Which sample has the highest read duplication rate? 
+`liver_14.5.2` with a precentage of duplicate reads equal 16.2%
+
+- Does kidney or liver tissue have a globally higher CpG methylation rate? 
+Kidney tissue samples has more overall methylatio rate at the CpG context with close to 80% compare to liver samples with approx 60% CpG methylation rate.
+
+- Which sample has the lowest mean coverage? 
+`kidney_14.5.2` with 28.7X mean coverage
