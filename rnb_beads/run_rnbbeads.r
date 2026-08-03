@@ -11,7 +11,6 @@ if (dir.exists(report.dir)) {
 rnb.options(
     assembly = "mm10",
     import.bed.style = "bismarkCov",
-    import.bed.header = FALSE,
     differential.comparison.columns = "tissue",
     differential.report.sites = FALSE,
     filtering.coverage.threshold = 10,
