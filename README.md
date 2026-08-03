@@ -314,4 +314,4 @@ Yes, the removed CpGs have a massive spike at zero methylation (0% methylated), 
 4. Ms4a6c (ENSMUSG00000079419)
 5. Cyp26c1 (ENSMUSG00000062432)
 
-Summary: Four of the top five promoters (5830416P10Rik, Olfr1425, Anxa1, and Ms4a6c) are hypermethylated in kidney compared to liver, while one promoter (Cyp26c1) is hypomethylated in kidney compared to liver.
+Four of the top five promoters (5830416P10Rik, Olfr1425, Anxa1, and Ms4a6c) are hypermethylated in kidney compared to liver, while one promoter (Cyp26c1) is hypomethylated in kidney compared to liver.
