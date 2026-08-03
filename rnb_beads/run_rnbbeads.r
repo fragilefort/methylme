@@ -6,19 +6,18 @@ sample.sheet <- "/vol/COMPEPIWS/groups/wgbs2/methylme/rnb_beads/sample_annotatio
 
 rnb.options(
     assembly = "mm10",
-    import.default.data.type = "bs.bed.dir",
     import.bed.style = "bismarkCov",
     differential.comparison.columns = "tissue",
     differential.report.sites = FALSE,
     filtering.coverage.threshold = 10,
     filtering.low.coverage.masking = TRUE,
     filtering.high.coverage.outliers = TRUE,
-    filtering.missing.value.quantile = 0
+    filtering.missing.value.quantile = 1
 )
 
 rnb.run.analysis(
     dir.reports = report.dir,
     sample.sheet = sample.sheet,
     data.dir = data.dir,
-    data.type = "bs.bed.dir"
+    data.type = "bismark.cov"
 )
