@@ -241,4 +241,13 @@ liver_14.5.1_trimmed_bismark_bt2.deduplicated.bam : 48411840 + 0 mapped
 liver_14.5.2_trimmed_bismark_bt2.deduplicated.bam : 49586255 + 0 mapped
 liver_15.5.1_trimmed_bismark_bt2.deduplicated.bam : 43031256 + 0 mapped 
 liver_15.5.2_trimmed_bismark_bt2.deduplicated.bam : 38484289 + 0 mapped 
+
+kidney_14.5.1_trimmed_bismark_bt2.deduplicated.bam : 48836159 + 0 mapped 
+kidney_14.5.2_trimmed_bismark_bt2.deduplicated.bam : 44830803 + 0 mapped 
+kidney_15.5.1_trimmed_bismark_bt2.deduplicated.bam : 39130857 + 0 mapped 
+kidney_15.5.2_trimmed_bismark_bt2.deduplicated.bam : 43080895 + 0 mapped 
 ```
+### Mthylation calls
+- Count how many cytosines were called in each sample.
+
+
