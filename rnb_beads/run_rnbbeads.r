@@ -20,6 +20,6 @@ rnb.run.analysis(
     dir.reports = report.dir,
     sample.sheet = sample.sheet,
     data.dir = data.dir,
-    data.type = "bismark.cov",
+    data.type = "data.dir",
     initialize.reports = FALSE
 )
