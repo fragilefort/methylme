@@ -573,15 +573,25 @@ if (!("mystery" %in% rnb.region.types("mm10"))) {
     stop("The custom mystery annotation was not loaded successfully.")
 }
 
-# For WGBS, use coverage-weighted regional methylation summaries.
-rnb.options(
-    region.aggregation = "coverage.weighted"
+rnb.set <- summarize.regions(
+    object = rnb.set,
+    region.type = "mystery",
+    aggregation = "coverage.weighted",
+    overwrite = TRUE
 )
 
-# Add methylation summaries for the mystery regions to the loaded object.
-rnb.set <- summarize.regions(
+# Confirm that mystery is now summarized inside the RnBSet object
+print(summarized.regions(rnb.set))
+
+# Save a new version of the object; preserve rnbSet_preprocessed unchanged.
+rnb.set.mystery.file <- file.path(
+    report.dir,
+    "rnbSet_preprocessed_with_mystery"
+)
+
+save.rnb.set(
     rnb.set,
-    region.types = "mystery"
+    rnb.set.mystery.file
 )
 
 print(summarized.regions(rnb.set))
