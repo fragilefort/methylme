@@ -220,7 +220,7 @@ The number of hits is larger than the number of bins in one dataset because `fin
 - Sample report
 - Alignment QC
 
-## 2 
+## 2. Config file
 - a) The data is single end 
 - b) the mapper used is bismark 
 
