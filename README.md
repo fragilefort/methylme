@@ -117,7 +117,7 @@ JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
 
 The liver and kidney bed-count tables were loaded into R and checked before continuing with the analysis.
 
-#### Q4 — Table dimensions
+#### Q4  Table dimensions
 
 | Table | Rows | Columns |
 |---|---:|---:|
@@ -126,7 +126,7 @@ The liver and kidney bed-count tables were loaded into R and checked before cont
 
 Both tables have the same dimensions. This is expected because liver and kidney were measured using the same genome-wide 2 kb binning scheme.
 
-#### Q5 — Column names
+#### Q5  Column names
 
 Both tables have the same column names:
 
@@ -136,19 +136,19 @@ Both tables have the same column names:
 
 Each row represents one genomic bin. The first three columns describe its genomic position, while the last three columns contain the signal values for the histone marks.
 
-#### Q6 — Genome length
+#### Q6 Genome length
 
 The genome length was calculated by summing `End - Start` across all bins. Both datasets gave **2,725,456,000 bp** (approximately **2.73 Gb**). The same result for liver and kidney is expected because both datasets cover the same mouse genome bins.
 
-#### Q8 — Dimensions after vertical concatenation
+#### Q8 Dimensions after vertical concatenation
 
 After adding a `cell_type` column and combining the liver and kidney tables with `rbind()`, the resulting data frame had **2,725,456 rows and 7 columns**. The number of rows doubled because both datasets were stacked, and the extra column stores whether each row comes from liver or kidney.
 
-#### Q9 — Dimensions after reshaping to long format
+#### Q9 Dimensions after reshaping to long format
 
 After reshaping the three histone-mark columns from wide to long format, the data frame had **8,176,368 rows and 3 columns**. Each original row now occurs three times: once for H3K27me3, once for H3K36me3, and once for H3K9me3.
 
-#### Q10 and Q11 — Density plots
+#### Q10 and Q11 Density plots
 
 <img width="2000" height="1200" alt="Density plot, full x-axis range" src="https://github.com/user-attachments/assets/d9677325-ef09-44e2-86ca-d0f905ca2425" />
 
@@ -158,7 +158,7 @@ The first density plot is strongly right-skewed: most genomic bins have very low
 
 Restricting the x-axis to 0–100 makes the main part of the distributions easier to see. The three marks have different shapes, showing that they are distributed differently across genomic bins. The liver and kidney panels have broadly similar overall distributions, suggesting that the major differences between tissues are likely to be at particular genomic loci rather than a large global shift in all bins.
 
-#### Q16 — Scree plot and cumulative scree plot
+#### Q16 Scree plot and cumulative scree plot
 
 <img width="2000" height="1500" alt="Scree plot" src="https://github.com/user-attachments/assets/7bb9c0d6-34e5-4788-a7c4-85f52f4c9c23" />
 
@@ -166,11 +166,11 @@ Restricting the x-axis to 0–100 makes the main part of the distributions easie
 
 Applying the elbow method to both graphs where we take into account the PCA components until the variance becomes stabilized ( no longer changes much between PC), we can take the first 3 PC as together they represent approximately  **90%** of the total variance. 
 
-#### Q17 — Principal-component loadings
+#### Q17 Principal-component loadings
 
 The PCA loading matrix has dimensions **6 x 6**. There are therefore **36 loading values** in total: each of the six original variables has one loading for each of the six principal components.
 
-#### Q18 — PC1 and PC2 loadings
+#### Q18 PC1 and PC2 loadings
 
 | Variable | PC1 | PC2 |
 |---|---:|---:|
@@ -189,7 +189,7 @@ PC2 separates H3K36me3 from the two other marks. H3K36me3 has strong negative PC
 
 ### Genomic Ranges
 
-#### Q2 — Total bases covered
+#### Q2 Total bases covered
 
 | Method | Liver | Kidney |
 |---|---:|---:|
@@ -198,7 +198,7 @@ PC2 separates H3K36me3 from the two other marks. H3K36me3 has strong negative PC
 
 The raw total adds the width of every range. The reduced total first merges overlapping or adjacent ranges, then calculates the total width. The two values are very similar, indicating that the 2 kb genomic bins are largely non-overlapping. The small difference results from ranges that touch or overlap and are merged by `reduce()`.
 
-#### Q5 — Overlaps between liver and kidney ranges
+#### Q5 Overlaps between liver and kidney ranges
 
 ```
 findOverlaps(liver_gr, kidney_gr) -> 4,088,142 hits
