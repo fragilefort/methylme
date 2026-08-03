@@ -13,7 +13,7 @@ rnb.options(
     filtering.low.coverage.masking = TRUE,
     filtering.high.coverage.outliers = TRUE,
     filtering.missing.value.quantile = 1,
-    num.cores = 12
+    n.cores = 12
 )
 
 rnb.run.analysis(
