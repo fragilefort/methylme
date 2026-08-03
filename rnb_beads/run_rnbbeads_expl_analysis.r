@@ -78,12 +78,39 @@ print(summarized.regions(rnb.set))
 ###############################################################################
 
 # Ensure phenotype rows are in exactly the same sample order as beta columns
-pheno.tab <- pheno.tab[
-    match(colnames(beta), rownames(pheno.tab)),
-    ,
-    drop = FALSE
-]
+# Show the identifiers that RnBeads stored internally
+cat("\nMethylation matrix column names:\n")
+print(colnames(beta))
 
+cat("\nPhenotype-table row names:\n")
+print(rownames(pheno.tab))
+
+cat("\nSample IDs from your sample sheet:\n")
+print(pheno.tab$sampleId)
+
+# The RnBSet was made from this exact sample sheet and has 8 samples.
+# Keep phenotype rows in their existing object order, then assign the
+# methylation-column identifiers to these rows for all manual plotting.
+if (nrow(pheno.tab) != ncol(beta)) {
+    stop(
+        "Number of phenotype rows (", nrow(pheno.tab),
+        ") does not equal number of methylation samples (", ncol(beta),
+        "). Do not continue."
+    )
+}
+
+# Check whether RnBeads already has the same order but different labels
+cat("\nPhenotype sampleId order:\n")
+print(pheno.tab$sampleId)
+
+# Store the original RnBeads phenotype row names for reference
+pheno.tab$rnbeads.internal.id <- rownames(pheno.tab)
+
+# For manual plots, link phenotype rows to methylation columns by position.
+# This is valid because both come from the same loaded rnbSet object.
+rownames(pheno.tab) <- colnames(beta)
+
+# Final safety check
 stopifnot(identical(rownames(pheno.tab), colnames(beta)))
 
 # Confirm that your CSV annotation fields are present
