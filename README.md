@@ -277,7 +277,7 @@ Kidney tissue samples has more overall methylatio rate at the CpG context with c
 ### Exploratory Analysis using IGV
 - Q4)
   - No the only chromosomes covered are chromosomes 18 and 19
-  The heatmap for unzoomed look:
+  - The heatmap for unzoomed look:
   <img width="1781" height="788" alt="Screenshot 2026-08-03 122645" src="https://github.com/user-attachments/assets/f2e159e1-3f6a-498f-908e-073195004638" />
   - The general state of The genome-wide IGV view shows that the DNA methylation landscape is generally highly methylated across the chromosome in both liver and kidney samples. Most bedGraph signals are in the upper part of the 0–100% methylation scale, which is expected for CpG methylation in differentiated mammalian tissue. However, methylation is not uniform: there are many local regions with lower signal, visible as valleys in the tracks. These low-methylation regions may correspond to regulatory regions such as CpG islands and promoters. The overall patterns appear broadly similar among replicates however from the heatmap point of view, we can see that generally the kidney have higher methylation levels than the levels a little bit also specific local differences need to be examined at higher zoom levels.
   - As we can see in those 2 screenshots we found both a hypomethylated and hypermethylated promoter respectively:
