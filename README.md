@@ -16,7 +16,7 @@ tags: wgbs
 HackMD Tutorial: https://hackmd.io/c/tutorials/%2FUFLeoGd_SmGy8acWOTs6JA
 ---
 
-## Day 1
+# Day 1
 
 ### System arc
 
@@ -320,3 +320,34 @@ Yes, the removed CpGs have a massive spike at zero methylation (0% methylated), 
 5. Cyp26c1 (ENSMUSG00000062432)
 
 Four of the top five promoters (5830416P10Rik, Olfr1425, Anxa1, and Ms4a6c) are hypermethylated in kidney compared to liver, while one promoter (Cyp26c1) is hypomethylated in kidney compared to liver.
+
+
+# Day 4
+## Differential methylation
+- Sort the resulting table by the combinedRank column and note the coordinates of these regions.
+
+```
+--- Top 10 Ranked Mystery Regions ---
+     Chromosome    Start      End Strand combinedRank mean.mean.diff
+5236      chr19 40536439 40537317      +           80      0.6731252
+5920      chr19 53464400 53465046      +           96      0.7303905
+3239      chr18 82569663 82569913      +          100      0.8010435
+4937      chr19 32487643 32488124      +          115      0.7295919
+4307      chr19 17014480 17015015      +          118      0.6360558
+4899      chr19 32200198 32200547      +          122      0.7336288
+5028      chr19 34844841 34845136      +          132      0.7288215
+2220      chr18 61789026 61789440      +          135      0.6272329
+4474      chr19 21897242 21897659      +          142      0.6230632
+4012      chr19  9938564  9939500      +          149      0.6196579
+     comb.p.adj.fdr
+5236   0.0003747531
+5920   0.0004823422
+3239   0.0001302144
+4937   0.0003747531
+4307   0.0005185470
+4899   0.0005254040
+5028   0.0003747531
+2220   0.0005294051
+4474   0.0005185470
+4012   0.0004823422
+```
