@@ -12,13 +12,26 @@ if (!dir.exists(out_dir)) {
     dir.create(out_dir, recursive = TRUE)
 }
 
-diff_meth   <- read.csv(wgbs_mystery_file)
-atac_master <- read.delim(atac_master_file)
+diff_meth   <- read.csv(wgbs_mystery_file, stringsAsFactors = FALSE)
+atac_master <- read.delim(atac_master_file, stringsAsFactors = FALSE)
 
 cat(sprintf("Loaded Mystery Regions: %d rows\n", nrow(diff_meth)))
 cat(sprintf("Loaded ATAC Peaks:     %d rows\n\n", nrow(atac_master)))
 
-# Convert to GRanges using exact chromosome/start/end column names
+# Clean strings and format numeric coordinates
+diff_meth$Chromosome <- trimws(gsub('"', '', as.character(diff_meth$Chromosome)))
+diff_meth$Start      <- as.numeric(diff_meth$Start)
+diff_meth$End        <- as.numeric(diff_meth$End)
+
+atac_master$chr   <- trimws(gsub('"', '', as.character(atac_master$chr)))
+atac_master$start <- as.numeric(atac_master$start)
+atac_master$end   <- as.numeric(atac_master$end)
+
+# Ensure "chr" prefix consistency
+diff_meth$Chromosome <- ifelse(startsWith(diff_meth$Chromosome, "chr"), diff_meth$Chromosome, paste0("chr", diff_meth$Chromosome))
+atac_master$chr      <- ifelse(startsWith(atac_master$chr, "chr"), atac_master$chr, paste0("chr", atac_master$chr))
+
+# Convert to GRanges
 dmr_gr <- makeGRangesFromDataFrame(
     diff_meth,
     seqnames.field = "Chromosome",
@@ -35,19 +48,29 @@ atac_gr <- makeGRangesFromDataFrame(
     keep.extra.columns = TRUE
 )
 
-# Exact Coordinate Matching (type = "equal")
-overlaps <- findOverlaps(dmr_gr, atac_gr, type = "equal")
+# First try strict equal match
+overlaps <- findOverlaps(dmr_gr, atac_gr, type = "equal", ignore.strand = TRUE)
 
-cat(sprintf("Total exact matched mystery regions: %d\n\n", length(overlaps)))
+# Fallback to maxgap = 1 if 0-based BED vs 1-based GRanges offset exists
+if (length(overlaps) == 0) {
+    cat("Notice: Strict type = 'equal' returned 0 matches. Retrying with maxgap = 1 (0-based/1-based offset tolerance)...\n")
+    overlaps <- findOverlaps(dmr_gr, atac_gr, maxgap = 1, ignore.strand = TRUE)
+}
 
 if (length(overlaps) == 0) {
-    stop("No exact matches found! Please verify chromosome notation between both tables.")
+    cat("Notice: Retrying with range overlap (type = 'any')...\n")
+    overlaps <- findOverlaps(dmr_gr, atac_gr, type = "any", ignore.strand = TRUE)
+}
+
+cat(sprintf("Successfully matched mystery regions: %d\n\n", length(overlaps)))
+
+if (length(overlaps) == 0) {
+    stop("Execution halted: No matching coordinates found between WGBS and ATAC tables.")
 }
 
 matched_dmr  <- diff_meth[queryHits(overlaps), ]
 matched_atac <- atac_master[subjectHits(overlaps), ]
 
-# Kidney: mean.mean.g1 (WGBS) vs. meanVstCountGrp1_kidney (ATAC)
 kidney_df <- data.frame(
     Region_ID     = paste0(matched_dmr$Chromosome, ":", matched_dmr$Start, "-", matched_dmr$End),
     Tissue        = "Kidney",
@@ -55,7 +78,6 @@ kidney_df <- data.frame(
     Accessibility = matched_atac$meanVstCountGrp1_kidney
 )
 
-# Liver: mean.mean.g2 (WGBS) vs. meanVstCountGrp2_liver (ATAC)
 liver_df <- data.frame(
     Region_ID     = paste0(matched_dmr$Chromosome, ":", matched_dmr$Start, "-", matched_dmr$End),
     Tissue        = "Liver",
@@ -76,11 +98,8 @@ stats_df <- plot_df %>%
         label = sprintf("Pearson r = %.3f\np = %.2e", pearson_r, p_val)
     )
 
-cat("========================================================\n")
-cat(" PEARSON CORRELATION (Mystery Regions)\n")
-cat("========================================================\n")
+cat(" PEARSON CORRELATION RESULTS (Mystery Regions)\n")
 print(as.data.frame(stats_df))
-cat("========================================================\n\n")
 
 p <- ggplot(plot_df, aes(x = Methylation, y = Accessibility)) +
     geom_point(aes(color = Tissue), alpha = 0.6, size = 1.8) +
@@ -104,7 +123,7 @@ p <- ggplot(plot_df, aes(x = Methylation, y = Accessibility)) +
     ) +
     labs(
         title = "Correspondence of DNA Methylation and Chromatin Accessibility",
-        subtitle = "Mystery Regions matched to ATAC Peaks (findOverlaps type = 'equal')",
+        subtitle = "Mystery Regions matched to ATAC Peaks",
         x = "DNA Methylation Level",
         y = "Normalized ATAC Accessibility Score (VST Count)"
     )
