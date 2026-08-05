@@ -9,7 +9,8 @@ CHIP_SEG_DIR="/vol/COMPEPIWS/groups/shared/ChIP-seq/chipseq1/segmentation"
 
 WGBS_SEG_DIR="/vol/COMPEPIWS/groups/shared/WGBS/wgbs2/segmentation"
 
-OUTDIR="/vol/COMPEPIWS/groups/wgbs2/methylme/deeptools_ROI"
+OUTDIR="/vol/COMPEPIWS/groups/wgbs2/methylme/integrative_analysis_deeptools_ROI"
+
 
 mkdir -p "$OUTDIR"
 
