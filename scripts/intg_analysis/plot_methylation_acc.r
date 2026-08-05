@@ -5,7 +5,7 @@ library(ggplot2)
 library(GenomicRanges)
 library(rtracklayer)
 
-diff_meth <- read.csv("WGBS/wgbs2/differential/differential_methylation_data/diffMethTable_region_cmp1_tiling.csv")
+diff_meth <- read.csv("/vol/COMPEPIWS/groups/shared/WGBS/wgbs2/differential/differential_methylation_data/diffMethTable_region_cmp1_tiling.csv")
 atac_master <- read.delim("/vol/COMPEPIWS/groups/shared/ATAC-seq/atacseq3/differential/differential_peaks_annotated.tsv")
 out_dir <- "/vol/COMPEPIWS/groups/wgbs2/methylme/integrative_analysis/atac-wgbs"
 
