@@ -5,46 +5,46 @@ library(ggplot2)
 library(GenomicRanges)
 
 wgbs_mystery_file <- "/vol/COMPEPIWS/groups/shared/WGBS/wgbs2/differential/diff_meth_mystery_regions_annotated.csv"
-atac_master_file  <- "/vol/COMPEPIWS/groups/shared/ATAC-seq/atacseq3/differential/differential_peaks_annotated.tsv"
-out_dir           <- "/vol/COMPEPIWS/groups/wgbs2/methylme/integrative_analysis/atac-wgbs"
+atac_master_file <- "/vol/COMPEPIWS/groups/shared/ATAC-seq/atacseq3/differential/differential_peaks_annotated.tsv"
+out_dir <- "/vol/COMPEPIWS/groups/wgbs2/methylme/integrative_analysis/atac-wgbs"
 
 if (!dir.exists(out_dir)) {
     dir.create(out_dir, recursive = TRUE)
 }
 
-diff_meth   <- read.csv(wgbs_mystery_file, stringsAsFactors = FALSE)
+diff_meth <- read.csv(wgbs_mystery_file, stringsAsFactors = FALSE)
 atac_master <- read.delim(atac_master_file, stringsAsFactors = FALSE)
 
 cat(sprintf("Loaded Mystery Regions: %d rows\n", nrow(diff_meth)))
 cat(sprintf("Loaded ATAC Peaks:     %d rows\n\n", nrow(atac_master)))
 
 # Clean strings and format numeric coordinates
-diff_meth$Chromosome <- trimws(gsub('"', '', as.character(diff_meth$Chromosome)))
-diff_meth$Start      <- as.numeric(diff_meth$Start)
-diff_meth$End        <- as.numeric(diff_meth$End)
+diff_meth$Chromosome <- trimws(gsub('"', "", as.character(diff_meth$Chromosome)))
+diff_meth$Start <- as.numeric(diff_meth$Start)
+diff_meth$End <- as.numeric(diff_meth$End)
 
-atac_master$chr   <- trimws(gsub('"', '', as.character(atac_master$chr)))
+atac_master$chr <- trimws(gsub('"', "", as.character(atac_master$chr)))
 atac_master$start <- as.numeric(atac_master$start)
-atac_master$end   <- as.numeric(atac_master$end)
+atac_master$end <- as.numeric(atac_master$end)
 
 # Ensure "chr" prefix consistency
 diff_meth$Chromosome <- ifelse(startsWith(diff_meth$Chromosome, "chr"), diff_meth$Chromosome, paste0("chr", diff_meth$Chromosome))
-atac_master$chr      <- ifelse(startsWith(atac_master$chr, "chr"), atac_master$chr, paste0("chr", atac_master$chr))
+atac_master$chr <- ifelse(startsWith(atac_master$chr, "chr"), atac_master$chr, paste0("chr", atac_master$chr))
 
 # Convert to GRanges
 dmr_gr <- makeGRangesFromDataFrame(
     diff_meth,
     seqnames.field = "Chromosome",
-    start.field    = "Start",
-    end.field      = "End",
+    start.field = "Start",
+    end.field = "End",
     keep.extra.columns = TRUE
 )
 
 atac_gr <- makeGRangesFromDataFrame(
     atac_master,
     seqnames.field = "chr",
-    start.field    = "start",
-    end.field      = "end",
+    start.field = "start",
+    end.field = "end",
     keep.extra.columns = TRUE
 )
 
@@ -68,7 +68,7 @@ if (length(overlaps) == 0) {
     stop("Execution halted: No matching coordinates found between WGBS and ATAC tables.")
 }
 
-matched_dmr  <- diff_meth[queryHits(overlaps), ]
+matched_dmr <- diff_meth[queryHits(overlaps), ]
 matched_atac <- atac_master[subjectHits(overlaps), ]
 
 kidney_df <- data.frame(
@@ -87,6 +87,7 @@ liver_df <- data.frame(
 
 plot_df <- rbind(kidney_df, liver_df)
 
+# Format p-value to prevent "p = 0e+00"
 stats_df <- plot_df %>%
     group_by(Tissue) %>%
     summarise(
@@ -95,7 +96,8 @@ stats_df <- plot_df %>%
         .groups   = "drop"
     ) %>%
     mutate(
-        label = sprintf("Pearson r = %.3f\np = %.2e", pearson_r, p_val)
+        p_formatted = ifelse(p_val < 2.2e-16, "p < 2.2e-16", sprintf("p = %.2e", p_val)),
+        label       = sprintf("Pearson r = %.3f\n%s", pearson_r, p_formatted)
     )
 
 cat(" PEARSON CORRELATION RESULTS (Mystery Regions)\n")
@@ -111,7 +113,7 @@ p <- ggplot(plot_df, aes(x = Methylation, y = Accessibility)) +
         size = 3.8,
         inherit.aes = FALSE
     ) +
-    facet_wrap(~ Tissue, scales = "free_y") +
+    facet_wrap(~Tissue, scales = "free_y") +
     scale_color_manual(values = c("Kidney" = "#D95F02", "Liver" = "#7570B3")) +
     theme_minimal(base_size = 12) +
     theme(
