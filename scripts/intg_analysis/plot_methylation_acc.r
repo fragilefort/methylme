@@ -37,7 +37,7 @@ overlaps <- findOverlaps(dmr_gr, atac_gr)
 matched_data <- data.frame(
     meth_diff   = dmr_gr$mean.mean.diff[queryHits(overlaps)], # Methylation difference (Kidney - Liver)
     atac_log2fc = atac_gr$log2FoldChange[subjectHits(overlaps)], # Accessibility fold-change
-    atac_fdr    = atac_gr$FDR[subjectHits(overlaps)]
+    atac_fdr    = atac_gr$padj[subjectHits(overlaps)]
 ) %>%
     mutate(
         Accessibility_Status = case_when(
