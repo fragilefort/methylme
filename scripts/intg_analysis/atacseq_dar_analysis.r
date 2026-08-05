@@ -4,7 +4,7 @@ library(dplyr)
 library(GenomicRanges)
 library(rtracklayer)
 
-wgbs_table <- "WGBS/wgbs2/differential/differential_methylation_data/diffMethTable_region_cmp1_tiling.csv"
+wgbs_table <- "/vol/COMPEPIWS/groups/shared/WGBS/wgbs2/differential/differential_methylation_data/diffMethTable_region_cmp1_tiling.csv"
 atac_master <- "/vol/COMPEPIWS/groups/shared/ATAC-seq/atacseq3/differential/differential_peaks_annotated.tsv"
 
 diff_df <- read.csv(wgbs_table)
