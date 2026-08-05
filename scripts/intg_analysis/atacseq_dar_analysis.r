@@ -27,7 +27,7 @@ atac_df <- read.delim(atac_master)
 
 # Filter for statistically significant Differentially Accessible Regions (FDR < 0.05 & |log2FC| >= 1)
 dars_df <- atac_df %>%
-    filter(FDR < 0.05 & abs(log2FoldChange) >= 1)
+    filter(padj < 0.05 & abs(log2FoldChange) >= 1)
 
 # Separate by tissue directionality
 kidney_dars_df <- dars_df %>% filter(log2FoldChange > 1)
