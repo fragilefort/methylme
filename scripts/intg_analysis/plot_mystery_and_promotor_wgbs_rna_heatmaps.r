@@ -57,6 +57,12 @@ rna_gene <- read_tsv(deg_bed_file, col_names = FALSE, show_col_types = FALSE) %>
 
 message("RNA-seq genes passing filters: ", nrow(rna_gene))
 
+# Ensembl IDs are sometimes stored with a version suffix (e.g. ".3") in one
+# file but not the other. Strip versions before joining so genes aren't
+# silently dropped by a mismatched ID format.
+strip_ensembl_version <- function(x) sub("\\.[0-9]+$", "", x)
+rna_gene <- rna_gene %>% mutate(ensembl_gene_id = strip_ensembl_version(ensembl_gene_id))
+
 # ---------------------- Publication colour scheme -------------------
 # Colour-blind-safe diverging palette (Blue - White - Red), smoothly
 # interpolated so gradients look continuous rather than banded.
@@ -179,7 +185,23 @@ plot_heatmap_pair <- function(dat, out_dir, prefix, methylation_title) {
   message(prefix, ": finished; shared genes = ", nrow(dat))
 }
 
+# Run one analysis end-to-end without letting a failure here block the
+# other analysis. Prints a clear message on success or failure.
+run_analysis <- function(label, expr) {
+  message("\n=== Starting analysis: ", label, " ===")
+  result <- tryCatch(
+    { force(expr); message("=== ", label, " completed successfully ===") ; TRUE },
+    error = function(e) {
+      message("!!! ", label, " FAILED: ", conditionMessage(e))
+      FALSE
+    }
+  )
+  invisible(result)
+}
+
 # ------------------- 1. Mystery-region WGBS data ------------------
+run_analysis("mystery regions", {
+
 if (Sys.which("bedtools") == "") stop("bedtools is not available in PATH.")
 
 mystery_dmrs <- read_csv(mystery_wgbs_file, show_col_types = FALSE) %>%
@@ -243,24 +265,41 @@ mystery_gene <- mystery_dmrs %>%
   ) %>%
   inner_join(rna_gene, by = "gene_symbol")
 
+message("Mystery-region genes after joining to RNA-seq: ", nrow(mystery_gene))
+
 plot_heatmap_pair(mystery_gene, out_dir, "mystery_regions", "Mean mystery-region methylation")
 
+})
+
 # ---------------------- 2. Promoter WGBS data ---------------------
-promoter_gene <- read_csv(promoter_wgbs_file, show_col_types = FALSE) %>%
+run_analysis("promoters", {
+
+promoter_wgbs_raw <- read_csv(promoter_wgbs_file, show_col_types = FALSE) %>%
   transmute(
-    ensembl_gene_id = as.character(id),
+    ensembl_gene_id = strip_ensembl_version(as.character(id)),
     wgbs_gene_symbol = as.character(symbol),
     kidney_methylation = as.numeric(mean.mean.kidney),
     liver_methylation = as.numeric(mean.mean.liver),
     mean_difference = as.numeric(mean.mean.diff),
     fdr = as.numeric(comb.p.adj.fdr),
     combined_rank = as.numeric(combinedRank)
-  ) %>%
+  )
+message("Promoter WGBS rows read: ", nrow(promoter_wgbs_raw))
+
+promoter_wgbs_filtered <- promoter_wgbs_raw %>%
   filter(
     mean_difference > wgbs_mean_diff_cutoff,
     fdr <= wgbs_fdr_cutoff,
     !is.na(ensembl_gene_id), ensembl_gene_id != ""
-  ) %>%
+  )
+message("Promoter WGBS rows passing mean-diff/FDR filters: ", nrow(promoter_wgbs_filtered))
+if (nrow(promoter_wgbs_filtered) == 0) {
+  stop("No promoter regions passed the WGBS filters (mean_difference > ",
+       wgbs_mean_diff_cutoff, ", fdr <= ", wgbs_fdr_cutoff, "). Check the ",
+       "input file and thresholds.")
+}
+
+promoter_gene <- promoter_wgbs_filtered %>%
   group_by(ensembl_gene_id) %>%
   summarise(
     wgbs_gene_symbol = first_nonmissing(wgbs_gene_symbol),
@@ -271,12 +310,26 @@ promoter_gene <- read_csv(promoter_wgbs_file, show_col_types = FALSE) %>%
     median_combined_rank = median(combined_rank, na.rm = TRUE),
     n_wgbs_rows = n(),
     .groups = "drop"
-  ) %>%
+  )
+message("Unique promoter genes after collapsing duplicate rows: ", nrow(promoter_gene))
+
+promoter_gene <- promoter_gene %>%
   inner_join(rna_gene, by = "ensembl_gene_id") %>%
   mutate(gene_symbol = coalesce(wgbs_gene_symbol, gene_symbol)) %>%
   select(-wgbs_gene_symbol)
+message("Promoter genes after joining to RNA-seq: ", nrow(promoter_gene))
+
+if (nrow(promoter_gene) < 2) {
+  stop("Fewer than two promoter genes overlap with the RNA-seq DEG list after ",
+       "joining on ensembl_gene_id. This is usually an ID-format mismatch ",
+       "(e.g. gene symbol vs Ensembl ID, or stale annotation build) rather ",
+       "than a true lack of overlap -- inspect promoter_wgbs_raw$ensembl_gene_id ",
+       "and rna_gene$ensembl_gene_id directly.")
+}
 
 plot_heatmap_pair(promoter_gene, out_dir, "promoters", "Mean promoter methylation")
 
-message("All mystery-region and promoter heatmaps finished.")
+})
+
+message("\nAll requested analyses attempted.")
 message("Results written to: ", out_dir)
