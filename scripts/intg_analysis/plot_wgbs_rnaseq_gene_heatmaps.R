@@ -5,6 +5,7 @@ suppressPackageStartupMessages({
   library(tidyr)
   library(AnnotationDbi)
   library(org.Mm.eg.db)
+  library(GenomicRanges)
   library(ComplexHeatmap)
   library(circlize)
   library(grid)
@@ -37,6 +38,10 @@ wgbs_fdr_cutoff <- 0.05
 rna_log2fc_cutoff <- 1
 rna_fdr_cutoff <- 0.05
 rna_minus_log10_fdr_cutoff <- -log10(rna_fdr_cutoff)
+first_nonmissing <- function(x) {
+  x <- x[!is.na(x) & x != ""]
+  if (length(x) == 0) NA_character_ else x[[1]]
+}
 
 # ------------------------------------------------------------------
 # 1. Read and filter WGBS DMRs
@@ -82,11 +87,47 @@ closest_transcript <- read_tsv(
   distinct(chr, start, end, refseq_nm)
 
 # Coordinate join: filtered DMRs + closest NM_ transcript
-wgbs_with_nm <- wgbs %>%
-  inner_join(closest_transcript, by = c("chr", "start", "end"))
+# Convert the two coordinate tables to genomic ranges.
+# closest_transcript comes from a BED-derived file: BED start is 0-based,
+# therefore add 1 when making a GRanges object.
+wgbs_gr <- GRanges(
+  seqnames = wgbs$chr,
+  ranges = IRanges(
+    start = wgbs$start,
+    end = wgbs$end
+  )
+)
 
-message("Filtered WGBS DMR-transcript rows after coordinate join: ", nrow(wgbs_with_nm))
-message("Unique NM_ transcripts after coordinate join: ", n_distinct(wgbs_with_nm$refseq_nm))
+closest_gr <- GRanges(
+  seqnames = closest_transcript$chr,
+  ranges = IRanges(
+    start = closest_transcript$start + 1L,
+    end = closest_transcript$end
+  )
+)
+
+# Match every filtered DMR to annotated regions that overlap it.
+overlap_hits <- findOverlaps(
+  query = wgbs_gr,
+  subject = closest_gr,
+  ignore.strand = TRUE
+)
+
+wgbs_with_nm <- bind_cols(
+  wgbs[queryHits(overlap_hits), ],
+  closest_transcript[subjectHits(overlap_hits), "refseq_nm", drop = FALSE]
+) %>%
+  distinct()
+
+message("Filtered WGBS DMR-transcript rows after genomic-overlap join: ", nrow(wgbs_with_nm))
+message("Unique NM_ transcripts after genomic-overlap join: ", n_distinct(wgbs_with_nm$refseq_nm))
+
+if (nrow(wgbs_with_nm) == 0) {
+  stop(
+    "No genomic overlaps were found between filtered WGBS DMRs and ",
+    "the closest-transcript file. Check that both use mm10 and chr naming."
+  )
+}
 
 # ------------------------------------------------------------------
 # 3. Map RefSeq NM_ transcript IDs to Ensembl mouse gene IDs
@@ -116,7 +157,7 @@ message("Unique mapped WGBS Ensembl genes: ", n_distinct(wgbs_mapped$ensembl_gen
 wgbs_gene <- wgbs_mapped %>%
   group_by(ensembl_gene_id) %>%
   summarise(
-    gene_symbol = first(na.omit(gene_symbol), default = NA_character_),
+    gene_symbol = first_nonmissing(gene_symbol),	
     kidney_methylation = median(kidney_methylation, na.rm = TRUE),
     liver_methylation = median(liver_methylation, na.rm = TRUE),
     median_mean_difference = median(mean_difference, na.rm = TRUE),
@@ -168,7 +209,7 @@ message("RNA-seq genes passing filters: ", nrow(rna))
 rna_gene <- rna %>%
   group_by(ensembl_gene_id) %>%
   summarise(
-    rna_gene_symbol = first(na.omit(rna_gene_symbol), default = NA_character_),
+    rna_gene_symbol = first_nonmissing(rna_gene_symbol),
     kidney_cpm = median(kidney_cpm, na.rm = TRUE),
     liver_cpm = median(liver_cpm, na.rm = TRUE),
     median_log2fc = median(log2fc, na.rm = TRUE),
