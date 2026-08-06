@@ -8,16 +8,13 @@ suppressPackageStartupMessages({
 })
 
 # -------------------------- Input files ---------------------------
-base_out_dir <- "/vol/COMPEPIWS/groups/wgbs2/methylme/integrative_analysis/rnaseq-wgbs"
+out_dir <- "/vol/COMPEPIWS/groups/wgbs2/methylme/integrative_analysis/rnaseq-wgbs"
 mystery_wgbs_file <- "/vol/COMPEPIWS/groups/shared/WGBS/wgbs2/differential/diff_meth_mystery_regions_annotated.csv"
 promoter_wgbs_file <- "/vol/COMPEPIWS/groups/shared/WGBS/wgbs2/differential/differential_methylation_data/diffMethTable_region_cmp1_promoters.csv"
 gene_gtf_file <- "/vol/COMPEPIWS/pipelines/references/mm10.reduced.refGene.gtf"
 deg_bed_file <- "/vol/COMPEPIWS/groups/shared/RNA-seq/rnaseq2/DEGs/DEGs_complete.bed"
 
-mystery_out_dir <- file.path(base_out_dir, "mystery_regions_RNA_clustered_green_black_red")
-promoter_out_dir <- file.path(base_out_dir, "promoters_RNA_clustered_green_black_red")
-dir.create(mystery_out_dir, recursive = TRUE, showWarnings = FALSE)
-dir.create(promoter_out_dir, recursive = TRUE, showWarnings = FALSE)
+dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
 # --------------------------- Thresholds ----------------------------
 wgbs_mean_diff_cutoff <- 0.20
@@ -60,6 +57,16 @@ rna_gene <- read_tsv(deg_bed_file, col_names = FALSE, show_col_types = FALSE) %>
 
 message("RNA-seq genes passing filters: ", nrow(rna_gene))
 
+# ---------------------- Publication colour scheme -------------------
+# Colour-blind-safe diverging palette (Blue - White - Red), smoothly
+# interpolated so gradients look continuous rather than banded.
+methylation_colours <- colorRamp2(
+  seq(0, 1, length.out = 7),
+  c("#053061", "#2166AC", "#67A9CF", "#F7F7F7", "#EF8A62", "#B2182B", "#67001F")
+)
+
+tissue_palette <- c(Kidney = "#1B9E77", Liver = "#D95F02")
+
 # ------------------------ Common plotting --------------------------
 plot_heatmap_pair <- function(dat, out_dir, prefix, methylation_title) {
   if (nrow(dat) < 2) stop(prefix, ": fewer than two shared genes remain.")
@@ -86,19 +93,23 @@ plot_heatmap_pair <- function(dat, out_dir, prefix, methylation_title) {
   rna_order <- rna_cluster$order
 
   show_gene_names <- nrow(dat) <= 40
-  height_cm <- max(12, min(100, 0.30 * nrow(dat)))
-  height_px <- max(1600, min(12000, 35 * nrow(dat)))
+  height_px <- max(1800, min(11000, 32 * nrow(dat)))
 
   tissue_annotation <- HeatmapAnnotation(
     Tissue = c("Kidney", "Liver"),
-    col = list(Tissue = c(Kidney = "#1B9E77", Liver = "#D73027")),
-    annotation_name_side = "left"
+    col = list(Tissue = tissue_palette),
+    annotation_name_side = "left",
+    simple_anno_size = unit(0.3, "cm"),
+    annotation_legend_param = list(Tissue = list(title = "Tissue"))
   )
 
-  # Same low-middle-high palette for both assays: green -> black -> red.
-  methylation_colours <- colorRamp2(c(0, 0.5, 1), c("#1B9E77", "black", "#D73027"))
   rna_max <- max(rna_matrix, na.rm = TRUE)
-  rna_colours <- colorRamp2(c(0, rna_max / 2, rna_max), c("#1B9E77", "black", "#D73027"))
+  rna_colours <- colorRamp2(
+    seq(0, rna_max, length.out = 7),
+    c("#053061", "#2166AC", "#67A9CF", "#F7F7F7", "#EF8A62", "#B2182B", "#67001F")
+  )
+
+  font_family <- "sans"
 
   ht_wgbs <- Heatmap(
     wgbs_matrix,
@@ -109,10 +120,20 @@ plot_heatmap_pair <- function(dat, out_dir, prefix, methylation_title) {
     row_order = rna_order,
     cluster_columns = FALSE,
     show_row_names = show_gene_names,
-    row_names_gp = gpar(fontsize = 6),
-    column_names_gp = gpar(fontsize = 10, fontface = "bold"),
-    column_title = paste0(methylation_title, " (ordered by RNA clusters)"),
-    heatmap_legend_param = list(title = "Methylation")
+    row_names_gp = gpar(fontsize = 7, fontfamily = font_family),
+    column_names_gp = gpar(fontsize = 11, fontface = "bold", fontfamily = font_family),
+    column_names_rot = 0,
+    column_names_centered = TRUE,
+    column_title = methylation_title,
+    column_title_gp = gpar(fontsize = 12, fontface = "bold", fontfamily = font_family),
+    border = TRUE,
+    rect_gp = gpar(col = "white", lwd = 0.5),
+    heatmap_legend_param = list(
+      title = "Mean\nmethylation",
+      title_gp = gpar(fontsize = 10, fontface = "bold"),
+      labels_gp = gpar(fontsize = 9),
+      legend_height = unit(3, "cm")
+    )
   )
 
   ht_rna <- Heatmap(
@@ -123,36 +144,36 @@ plot_heatmap_pair <- function(dat, out_dir, prefix, methylation_title) {
     cluster_rows = as.dendrogram(rna_cluster),
     cluster_columns = FALSE,
     show_row_names = show_gene_names,
-    row_names_gp = gpar(fontsize = 6),
-    column_names_gp = gpar(fontsize = 10, fontface = "bold"),
-    column_title = "Mean RNA-seq CPM (RNA expression clustering)",
-    heatmap_legend_param = list(title = "log2(CPM + 1)")
+    row_names_gp = gpar(fontsize = 7, fontfamily = font_family),
+    column_names_gp = gpar(fontsize = 11, fontface = "bold", fontfamily = font_family),
+    column_names_rot = 0,
+    column_names_centered = TRUE,
+    column_title = "RNA-seq expression",
+    column_title_gp = gpar(fontsize = 12, fontface = "bold", fontfamily = font_family),
+    border = TRUE,
+    rect_gp = gpar(col = "white", lwd = 0.5),
+    heatmap_legend_param = list(
+      title = "log2(CPM+1)",
+      title_gp = gpar(fontsize = 10, fontface = "bold"),
+      labels_gp = gpar(fontsize = 9),
+      legend_height = unit(3, "cm")
+    )
   )
 
   write_csv(dat, file.path(out_dir, paste0(prefix, "_integrated_gene_table.csv")))
 
-  pdf(file.path(out_dir, paste0(prefix, "_methylation_heatmap.pdf")), width = 8, height = height_cm / 2.54)
-  draw(ht_wgbs, heatmap_legend_side = "right", annotation_legend_side = "right")
-  dev.off()
-
-  png(file.path(out_dir, paste0(prefix, "_methylation_heatmap.png")), width = 2400, height = height_px, res = 300)
-  draw(ht_wgbs, heatmap_legend_side = "right", annotation_legend_side = "right")
-  dev.off()
-
-  pdf(file.path(out_dir, paste0(prefix, "_RNA_CPM_heatmap.pdf")), width = 8, height = height_cm / 2.54)
-  draw(ht_rna, heatmap_legend_side = "right", annotation_legend_side = "right")
-  dev.off()
-
-  png(file.path(out_dir, paste0(prefix, "_RNA_CPM_heatmap.png")), width = 2400, height = height_px, res = 300)
-  draw(ht_rna, heatmap_legend_side = "right", annotation_legend_side = "right")
-  dev.off()
-
-  pdf(file.path(out_dir, paste0(prefix, "_aligned_heatmaps.pdf")), width = 15, height = height_cm / 2.54)
-  draw(ht_wgbs + ht_rna, heatmap_legend_side = "right", annotation_legend_side = "right")
-  dev.off()
-
-  png(file.path(out_dir, paste0(prefix, "_aligned_heatmaps.png")), width = 4200, height = height_px, res = 300)
-  draw(ht_wgbs + ht_rna, heatmap_legend_side = "right", annotation_legend_side = "right")
+  png(
+    file.path(out_dir, paste0(prefix, "_heatmap.png")),
+    width = 4200, height = height_px, res = 300, bg = "white"
+  )
+  draw(
+    ht_wgbs + ht_rna,
+    heatmap_legend_side = "right",
+    annotation_legend_side = "right",
+    ht_gap = unit(6, "mm"),
+    merge_legend = TRUE,
+    padding = unit(c(4, 4, 4, 4), "mm")
+  )
   dev.off()
 
   message(prefix, ": finished; shared genes = ", nrow(dat))
@@ -222,7 +243,7 @@ mystery_gene <- mystery_dmrs %>%
   ) %>%
   inner_join(rna_gene, by = "gene_symbol")
 
-plot_heatmap_pair(mystery_gene, mystery_out_dir, "mystery_regions", "Mean mystery-region methylation")
+plot_heatmap_pair(mystery_gene, out_dir, "mystery_regions", "Mean mystery-region methylation")
 
 # ---------------------- 2. Promoter WGBS data ---------------------
 promoter_gene <- read_csv(promoter_wgbs_file, show_col_types = FALSE) %>%
@@ -255,8 +276,7 @@ promoter_gene <- read_csv(promoter_wgbs_file, show_col_types = FALSE) %>%
   mutate(gene_symbol = coalesce(wgbs_gene_symbol, gene_symbol)) %>%
   select(-wgbs_gene_symbol)
 
-plot_heatmap_pair(promoter_gene, promoter_out_dir, "promoters", "Mean promoter methylation")
+plot_heatmap_pair(promoter_gene, out_dir, "promoters", "Mean promoter methylation")
 
 message("All mystery-region and promoter heatmaps finished.")
-message("Mystery results: ", mystery_out_dir)
-message("Promoter results: ", promoter_out_dir)
+message("Results written to: ", out_dir)
