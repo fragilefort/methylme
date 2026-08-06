@@ -204,8 +204,42 @@ for tissue in liver kidney; do
         --outFileSortedRegions "$OUTROOT/PMDs_ATAC/$tissue/sorted_regions.bed"
     render_heatmap "$OUTROOT/PMDs_ATAC/$tissue/matrix.gz" "$OUTROOT/PMDs_ATAC/$tissue" "${tissue}_PMDs_ATAC" "$LABEL ATAC accessibility across $LABEL PMDs" "YlOrRd" --startLabel "PMD start" --endLabel "PMD end" --regionsLabel "$LABEL PMDs"
 
+
     computeMatrix scale-regions -b 10000 -a 10000 --regionBodyLength 5000 --binSize 100 -p "$THREADS" \
         -R "$PMDS" \
         -S "$WGBS" \
         --samplesLabel "$LABEL merged WGBS" \
-        --missingDataAsZero 
+        --missingDataAsZero \
+        --outFileName "$OUTROOT/PMDs_WGBS/$tissue/matrix.gz" \
+        --outFileSortedRegions "$OUTROOT/PMDs_WGBS/$tissue/sorted_regions.bed"
+
+    render_heatmap \
+        "$OUTROOT/PMDs_WGBS/$tissue/matrix.gz" \
+        "$OUTROOT/PMDs_WGBS/$tissue" \
+        "${tissue}_PMDs_WGBS" \
+        "$LABEL DNA methylation across $LABEL PMDs" \
+        "RdYlBu_r" \
+        --startLabel "PMD start" \
+        --endLabel "PMD end" \
+        --regionsLabel "$LABEL PMDs"
+
+    computeMatrix scale-regions -b 10000 -a 10000 --regionBodyLength 5000 --binSize 100 -p "$THREADS" \
+        -R "$PMDS" \
+        -S "$H3K9ME3" \
+        --samplesLabel "$LABEL E14.5 H3K9me3" \
+        --missingDataAsZero \
+        --outFileName "$OUTROOT/PMDs_H3K9me3/$tissue/matrix.gz" \
+        --outFileSortedRegions "$OUTROOT/PMDs_H3K9me3/$tissue/sorted_regions.bed"
+
+    render_heatmap \
+        "$OUTROOT/PMDs_H3K9me3/$tissue/matrix.gz" \
+        "$OUTROOT/PMDs_H3K9me3/$tissue" \
+        "${tissue}_PMDs_H3K9me3" \
+        "$LABEL H3K9me3 signal across $LABEL PMDs" \
+        "Purples" \
+        --startLabel "PMD start" \
+        --endLabel "PMD end" \
+        --regionsLabel "$LABEL PMDs"
+done
+
+echo "Finished. All results are in: $OUTROOT"
