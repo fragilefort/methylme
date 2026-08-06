@@ -10,7 +10,7 @@ suppressPackageStartupMessages({
 wgbs_mystery_file <- "/vol/COMPEPIWS/groups/shared/WGBS/wgbs2/differential/diff_meth_mystery_regions_annotated.csv"
 gene_gtf_file <- "/vol/COMPEPIWS/pipelines/references/mm10.reduced.refGene.gtf"
 deg_bed_file <- "/vol/COMPEPIWS/groups/shared/RNA-seq/rnaseq2/DEGs/DEGs_complete.bed"
-out_dir <- "/vol/COMPEPIWS/groups/wgbs2/methylme/integrative_analysis/rnaseq-wgbs/gene_symbol_heatmaps_from_gtf"
+out_dir <- "/vol/COMPEPIWS/groups/wgbs2/methylme/integrative_analysis/rnaseq-wgbs/gene_symbol_heatmaps_clustered_by_rna"
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
 wgbs_mean_diff_cutoff <- 0.20
@@ -28,7 +28,7 @@ if (Sys.which("bedtools") == "") {
   stop("bedtools is not available in PATH. Activate an environment containing bedtools.")
 }
 
-# WGBS: g1 = Kidney, g2 = Liver
+# WGBS filtering: g1 = Kidney and g2 = Liver.
 wgbs <- read_csv(wgbs_mystery_file, show_col_types = FALSE) %>%
   transmute(
     dmr_id = paste(Chromosome, Start, End, sep = ":"),
@@ -45,13 +45,8 @@ wgbs <- read_csv(wgbs_mystery_file, show_col_types = FALSE) %>%
 
 message("WGBS DMRs passing filters: ", nrow(wgbs))
 
-# Read transcript records from the local refGene GTF.
-gtf_transcripts <- read_tsv(
-  gene_gtf_file,
-  col_names = FALSE,
-  comment = "#",
-  show_col_types = FALSE
-) %>%
+# Local refGene GTF transcript records, sorted for bedtools.
+gtf_transcripts <- read_tsv(gene_gtf_file, col_names = FALSE, comment = "#", show_col_types = FALSE) %>%
   filter(X3 == "transcript") %>%
   transmute(
     chr = as.character(X1),
@@ -73,32 +68,23 @@ gtf_transcripts <- read_tsv(
 
 message("Transcript records available in local GTF: ", nrow(gtf_transcripts))
 
-# Make sorted temporary BED files. WGBS CSV start values are 1-based;
-# BED starts are 0-based, therefore start - 1 is used here.
+# Create sorted temporary BED inputs and assign each DMR to its closest GTF transcript.
 dmr_bed <- tempfile(fileext = ".bed")
 gtf_bed <- tempfile(fileext = ".bed")
 closest_out <- tempfile(fileext = ".tsv")
 
-write_tsv(
-  wgbs %>% transmute(chr, start = start - 1L, end, dmr_id),
-  dmr_bed,
-  col_names = FALSE
-)
-
+write_tsv(wgbs %>% transmute(chr, start = start - 1L, end, dmr_id), dmr_bed, col_names = FALSE)
 write_tsv(gtf_transcripts, gtf_bed, col_names = FALSE)
 
-# For each filtered DMR, assign the nearest GTF transcript.
-# A has four columns, B has six columns, then bedtools adds one distance column.
 status <- system2(
   "bedtools",
   args = c("closest", "-a", dmr_bed, "-b", gtf_bed, "-D", "a", "-t", "first"),
   stdout = closest_out
 )
 
-if (status != 0) {
-  stop("bedtools closest failed.")
-}
+if (status != 0) stop("bedtools closest failed.")
 
+# bedtools output: A has 4 columns, B has 6, then the final distance column.
 closest_gene <- read_tsv(closest_out, col_names = FALSE, show_col_types = FALSE) %>%
   transmute(
     dmr_id = as.character(X4),
@@ -111,18 +97,8 @@ closest_gene <- read_tsv(closest_out, col_names = FALSE, show_col_types = FALSE)
 
 unlink(c(dmr_bed, gtf_bed, closest_out))
 
-wgbs_mapped <- wgbs %>%
-  inner_join(closest_gene, by = "dmr_id")
-
-message("WGBS DMRs assigned to closest GTF genes: ", nrow(wgbs_mapped))
-message("Unique WGBS gene symbols: ", n_distinct(wgbs_mapped$closest_gene_symbol))
-
-if (nrow(wgbs_mapped) == 0) {
-  stop("No DMRs were assigned to genes by bedtools closest.")
-}
-
-# Median-collapse all DMRs assigned to the same gene.
-wgbs_gene <- wgbs_mapped %>%
+wgbs_gene <- wgbs %>%
+  inner_join(closest_gene, by = "dmr_id") %>%
   group_by(gene_symbol = closest_gene_symbol) %>%
   summarise(
     kidney_methylation = median(kidney_methylation, na.rm = TRUE),
@@ -134,9 +110,11 @@ wgbs_gene <- wgbs_mapped %>%
     .groups = "drop"
   )
 
-# RNA BED: col4 gene symbol, col5 -log10(FDR), col6 log2FC,
+message("Unique WGBS gene symbols: ", nrow(wgbs_gene))
+
+# RNA filtering: col4 gene symbol, col5 -log10(FDR), col6 log2FC,
 # col7 Kidney CPM, col8 Liver CPM, col9 Ensembl ID.
-rna <- read_tsv(deg_bed_file, col_names = FALSE, show_col_types = FALSE) %>%
+rna_gene <- read_tsv(deg_bed_file, col_names = FALSE, show_col_types = FALSE) %>%
   transmute(
     gene_symbol = as.character(X4),
     minus_log10_fdr = as.numeric(X5),
@@ -150,12 +128,7 @@ rna <- read_tsv(deg_bed_file, col_names = FALSE, show_col_types = FALSE) %>%
     minus_log10_fdr >= rna_minus_log10_fdr_cutoff,
     !is.na(gene_symbol),
     gene_symbol != ""
-  )
-
-message("RNA-seq rows passing filters: ", nrow(rna))
-
-# Median-collapse duplicate RNA entries per gene symbol.
-rna_gene <- rna %>%
+  ) %>%
   group_by(gene_symbol) %>%
   summarise(
     ensembl_gene_id = first_nonmissing(ensembl_gene_id),
@@ -166,6 +139,8 @@ rna_gene <- rna %>%
     n_rna_rows = n(),
     .groups = "drop"
   )
+
+message("RNA-seq genes passing filters: ", nrow(rna_gene))
 
 integrated_gene_data <- wgbs_gene %>%
   inner_join(rna_gene, by = "gene_symbol") %>%
@@ -192,11 +167,14 @@ rna_matrix <- integrated_gene_data %>%
 colnames(rna_matrix) <- c("Kidney", "Liver")
 rownames(rna_matrix) <- integrated_gene_data$gene_symbol
 
-row_clustering <- hclust(dist(wgbs_matrix), method = "complete")
-row_order <- row_clustering$order
-show_gene_names <- nrow(wgbs_matrix) <= 100
-plot_height_cm <- max(12, min(100, 0.30 * nrow(wgbs_matrix)))
-plot_height_px <- max(1600, min(12000, 35 * nrow(wgbs_matrix)))
+# RNA-BASED CLUSTERING: Euclidean distance on log2(Kidney CPM + 1)
+# and log2(Liver CPM + 1), using complete linkage.
+rna_row_clustering <- hclust(dist(rna_matrix), method = "complete")
+rna_row_order <- rna_row_clustering$order
+
+show_gene_names <- nrow(rna_matrix) <= 100
+plot_height_cm <- max(12, min(100, 0.30 * nrow(rna_matrix)))
+plot_height_px <- max(1600, min(12000, 35 * nrow(rna_matrix)))
 
 column_annotation <- HeatmapAnnotation(
   Tissue = c("Kidney", "Liver"),
@@ -208,52 +186,54 @@ methylation_colors <- colorRamp2(c(0, 0.5, 1), c("#2166AC", "white", "#B2182B"))
 rna_max <- max(rna_matrix, na.rm = TRUE)
 rna_colors <- colorRamp2(c(0, rna_max / 2, rna_max), c("white", "#FDB863", "#B2182B"))
 
+# WGBS is ordered by RNA clustering, but is not reclustered.
 ht_wgbs <- Heatmap(
   wgbs_matrix,
   name = "Mean methylation",
   col = methylation_colors,
   top_annotation = column_annotation,
-  cluster_rows = as.dendrogram(row_clustering),
+  cluster_rows = FALSE,
+  row_order = rna_row_order,
   cluster_columns = FALSE,
   show_row_names = show_gene_names,
   row_names_gp = gpar(fontsize = 6),
   column_names_gp = gpar(fontsize = 10, fontface = "bold"),
-  column_title = "Mean methylation of filtered DMR-associated genes",
+  column_title = "Mean methylation (ordered by RNA expression clusters)",
   heatmap_legend_param = list(title = "Methylation")
 )
 
+# RNA receives the dendrogram because RNA values define the clustering.
 ht_rna <- Heatmap(
   rna_matrix,
   name = "log2(CPM + 1)",
   col = rna_colors,
   top_annotation = column_annotation,
-  cluster_rows = FALSE,
-  row_order = row_order,
+  cluster_rows = as.dendrogram(rna_row_clustering),
   cluster_columns = FALSE,
   show_row_names = show_gene_names,
   row_names_gp = gpar(fontsize = 6),
   column_names_gp = gpar(fontsize = 10, fontface = "bold"),
-  column_title = "Mean RNA-seq CPM of the same genes",
+  column_title = "Mean RNA-seq CPM (RNA expression clustering)",
   heatmap_legend_param = list(title = "log2(CPM + 1)")
 )
 
-pdf(file.path(out_dir, "WGBS_mean_methylation_heatmap.pdf"), width = 8, height = plot_height_cm / 2.54)
+pdf(file.path(out_dir, "WGBS_mean_methylation_RNA_clustered_heatmap.pdf"), width = 8, height = plot_height_cm / 2.54)
 draw(ht_wgbs)
 dev.off()
 
-pdf(file.path(out_dir, "RNA_mean_CPM_heatmap.pdf"), width = 8, height = plot_height_cm / 2.54)
+pdf(file.path(out_dir, "RNA_mean_CPM_RNA_clustered_heatmap.pdf"), width = 8, height = plot_height_cm / 2.54)
 draw(ht_rna)
 dev.off()
 
-png(file.path(out_dir, "WGBS_mean_methylation_heatmap.png"), width = 2400, height = plot_height_px, res = 300)
+png(file.path(out_dir, "WGBS_mean_methylation_RNA_clustered_heatmap.png"), width = 2400, height = plot_height_px, res = 300)
 draw(ht_wgbs)
 dev.off()
 
-png(file.path(out_dir, "RNA_mean_CPM_heatmap.png"), width = 2400, height = plot_height_px, res = 300)
+png(file.path(out_dir, "RNA_mean_CPM_RNA_clustered_heatmap.png"), width = 2400, height = plot_height_px, res = 300)
 draw(ht_rna)
 dev.off()
 
-pdf(file.path(out_dir, "WGBS_and_RNA_aligned_gene_heatmaps.pdf"), width = 14, height = plot_height_cm / 2.54)
+pdf(file.path(out_dir, "WGBS_and_RNA_aligned_heatmaps_clustered_by_RNA.pdf"), width = 14, height = plot_height_cm / 2.54)
 draw(ht_wgbs + ht_rna, heatmap_legend_side = "bottom", annotation_legend_side = "bottom")
 dev.off()
 
