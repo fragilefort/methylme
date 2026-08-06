@@ -14,15 +14,7 @@ set -euo pipefail
 # Kidney regions with Kidney signal only.
 # Outputs are written to a NEW directory, preserving prior combined analyses.
 
-if [[ -f "$HOME/miniconda3/etc/profile.d/conda.sh" ]]; then
-    source "$HOME/miniconda3/etc/profile.d/conda.sh"
-elif [[ -f "$HOME/anaconda3/etc/profile.d/conda.sh" ]]; then
-    source "$HOME/anaconda3/etc/profile.d/conda.sh"
-else
-    echo "Cannot find conda.sh. Edit this script with your Conda installation path." >&2
-    exit 1
-fi
-conda activate deeptools
+export PATH="/vol/COMPEPIWS/groups/wgbs2/methylme/conda_deeptools/bin:$PATH"
 
 THREADS="${SLURM_CPUS_PER_TASK:-1}"
 ROI_DIR="/vol/COMPEPIWS/groups/wgbs2/methylme/integrative_analysis/integrative_analysis_deeptools_ROI"
