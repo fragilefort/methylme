@@ -5,3 +5,6 @@ rnb_beads/rnbeads_reports/
 rnb_beads/exploratory_analysis_3.3/
 integrative_analysis/
 integrative_analysis_deeptools_ROI
+# Python temporary files
+__pycache__/
+*.pyc

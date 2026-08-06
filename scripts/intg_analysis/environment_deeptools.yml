@@ -1,0 +1,10 @@
+name: deeptools_analysis
+
+channels:
+  - conda-forge
+  - bioconda
+
+dependencies:
+  - python=3.11
+  - deeptools
+  - ucsc-bedgraphtobigwig
