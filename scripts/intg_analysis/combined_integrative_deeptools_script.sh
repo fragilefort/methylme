@@ -1,9 +1,20 @@
 #!/usr/bin/env bash
+#SBATCH --job-name=integrative_deeptools
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=48G
+#SBATCH --time=24:00:00
+#SBATCH --output=integrative_deeptools_%j.out
+#SBATCH --error=integrative_deeptools_%j.err
+
 set -euo pipefail
 
 # Unified deepTools workflow
-# Option 1: promoters/enhancers compare Liver and Kidney together.
+# Promoters/enhancers compare Liver and Kidney together.
 # PMDs use matched tissue only: Liver PMDs with Liver signal, Kidney PMDs with Kidney signal.
+
+THREADS="${SLURM_CPUS_PER_TASK:-1}"
 
 ROI_DIR="/vol/COMPEPIWS/groups/wgbs2/methylme/integrative_analysis/integrative_analysis_deeptools_ROI"
 OUTROOT="$ROI_DIR/unified_deeptools_option1_14_5_REP1"
@@ -33,7 +44,10 @@ LIVER_H3K9ME3="/vol/COMPEPIWS/groups/shared/ChIP-seq/chipseq2/signals/liver_14.5
 KIDNEY_H3K9ME3="/vol/COMPEPIWS/groups/shared/ChIP-seq/chipseq1/signals/kidney_14.5_H3K9me3_REP1.mLb.clN.bigWig"
 
 for cmd in computeMatrix plotHeatmap; do
-    command -v "$cmd" >/dev/null || { echo "Missing command: $cmd" >&2; exit 1; }
+    command -v "$cmd" >/dev/null || {
+        echo "Missing command: $cmd" >&2
+        exit 1
+    }
 done
 
 for file in \
@@ -42,12 +56,28 @@ for file in \
     "$LIVER_H3K4ME3" "$KIDNEY_H3K4ME3" "$LIVER_H3K4ME1" "$KIDNEY_H3K4ME1" \
     "$LIVER_H3K27AC" "$KIDNEY_H3K27AC" "$LIVER_H3K9ME3" "$KIDNEY_H3K9ME3"
 do
-    [[ -s "$file" ]] || { echo "Missing or empty input: $file" >&2; exit 1; }
+    [[ -s "$file" ]] || {
+        echo "Missing or empty input: $file" >&2
+        exit 1
+    }
 done
 
-mkdir -p "$OUTROOT"/{promoters_ATAC,promoters_WGBS,promoters_H3K4me3,enhancers_ATAC,enhancers_WGBS,enhancers_H3K4me1,enhancers_H3K27ac,PMDs_ATAC/liver,PMDs_ATAC/kidney,PMDs_WGBS/liver,PMDs_WGBS/kidney,PMDs_H3K9me3/liver,PMDs_H3K9me3/kidney}
+mkdir -p \
+    "$OUTROOT/promoters_ATAC" \
+    "$OUTROOT/promoters_WGBS" \
+    "$OUTROOT/promoters_H3K4me3" \
+    "$OUTROOT/enhancers_ATAC" \
+    "$OUTROOT/enhancers_WGBS" \
+    "$OUTROOT/enhancers_H3K4me1" \
+    "$OUTROOT/enhancers_H3K27ac" \
+    "$OUTROOT/PMDs_ATAC/liver" \
+    "$OUTROOT/PMDs_ATAC/kidney" \
+    "$OUTROOT/PMDs_WGBS/liver" \
+    "$OUTROOT/PMDs_WGBS/kidney" \
+    "$OUTROOT/PMDs_H3K9me3/liver" \
+    "$OUTROOT/PMDs_H3K9me3/kidney"
 
-# Produces a single figure with the average profile above the heatmap and colour bar.
+# Produces a figure with the average profile above the heatmap and a colour bar.
 render_heatmap() {
     local matrix="$1"
     local outdir="$2"
@@ -81,7 +111,7 @@ render_heatmap() {
 # -------------------------------------------------------------------
 # PROMOTERS: TSS -500 bp to +1,500 bp; Liver and Kidney together.
 # -------------------------------------------------------------------
-computeMatrix reference-point --referencePoint TSS -b 500 -a 1500 --binSize 25 \
+computeMatrix reference-point --referencePoint TSS -b 500 -a 1500 --binSize 25 -p "$THREADS" \
     -R "$GENES" \
     -S "$LIVER_ATAC" "$KIDNEY_ATAC" \
     --samplesLabel "Liver E14.5 REP1 ATAC" "Kidney E14.5 REP1 ATAC" \
@@ -90,7 +120,7 @@ computeMatrix reference-point --referencePoint TSS -b 500 -a 1500 --binSize 25 \
     --outFileSortedRegions "$OUTROOT/promoters_ATAC/sorted_regions.bed"
 render_heatmap "$OUTROOT/promoters_ATAC/matrix.gz" "$OUTROOT/promoters_ATAC" "promoters_ATAC" "ATAC accessibility at promoters" "YlOrRd" --refPointLabel "TSS"
 
-computeMatrix reference-point --referencePoint TSS -b 500 -a 1500 --binSize 25 \
+computeMatrix reference-point --referencePoint TSS -b 500 -a 1500 --binSize 25 -p "$THREADS" \
     -R "$GENES" \
     -S "$LIVER_WGBS" "$KIDNEY_WGBS" \
     --samplesLabel "Liver merged WGBS" "Kidney merged WGBS" \
@@ -99,7 +129,7 @@ computeMatrix reference-point --referencePoint TSS -b 500 -a 1500 --binSize 25 \
     --outFileSortedRegions "$OUTROOT/promoters_WGBS/sorted_regions.bed"
 render_heatmap "$OUTROOT/promoters_WGBS/matrix.gz" "$OUTROOT/promoters_WGBS" "promoters_WGBS" "DNA methylation at promoters" "RdYlBu_r" --refPointLabel "TSS"
 
-computeMatrix reference-point --referencePoint TSS -b 500 -a 1500 --binSize 25 \
+computeMatrix reference-point --referencePoint TSS -b 500 -a 1500 --binSize 25 -p "$THREADS" \
     -R "$GENES" \
     -S "$LIVER_H3K4ME3" "$KIDNEY_H3K4ME3" \
     --samplesLabel "Liver E14.5 H3K4me3" "Kidney E14.5 H3K4me3" \
@@ -111,7 +141,7 @@ render_heatmap "$OUTROOT/promoters_H3K4me3/matrix.gz" "$OUTROOT/promoters_H3K4me
 # -------------------------------------------------------------------
 # ENHANCERS: centre +/-1 kb; Liver and Kidney regions and signals together.
 # -------------------------------------------------------------------
-computeMatrix reference-point --referencePoint center -b 1000 -a 1000 --binSize 25 \
+computeMatrix reference-point --referencePoint center -b 1000 -a 1000 --binSize 25 -p "$THREADS" \
     -R "$LIVER_ENHANCERS" "$KIDNEY_ENHANCERS" \
     -S "$LIVER_ATAC" "$KIDNEY_ATAC" \
     --samplesLabel "Liver E14.5 REP1 ATAC" "Kidney E14.5 REP1 ATAC" \
@@ -120,7 +150,7 @@ computeMatrix reference-point --referencePoint center -b 1000 -a 1000 --binSize 
     --outFileSortedRegions "$OUTROOT/enhancers_ATAC/sorted_regions.bed"
 render_heatmap "$OUTROOT/enhancers_ATAC/matrix.gz" "$OUTROOT/enhancers_ATAC" "enhancers_ATAC" "ATAC accessibility around ChromHMM enhancers" "YlOrRd" --refPointLabel "Enhancer centre" --regionsLabel "Liver enhancers" "Kidney enhancers"
 
-computeMatrix reference-point --referencePoint center -b 1000 -a 1000 --binSize 25 \
+computeMatrix reference-point --referencePoint center -b 1000 -a 1000 --binSize 25 -p "$THREADS" \
     -R "$LIVER_ENHANCERS" "$KIDNEY_ENHANCERS" \
     -S "$LIVER_WGBS" "$KIDNEY_WGBS" \
     --samplesLabel "Liver merged WGBS" "Kidney merged WGBS" \
@@ -129,7 +159,7 @@ computeMatrix reference-point --referencePoint center -b 1000 -a 1000 --binSize 
     --outFileSortedRegions "$OUTROOT/enhancers_WGBS/sorted_regions.bed"
 render_heatmap "$OUTROOT/enhancers_WGBS/matrix.gz" "$OUTROOT/enhancers_WGBS" "enhancers_WGBS" "DNA methylation around ChromHMM enhancers" "RdYlBu_r" --refPointLabel "Enhancer centre" --regionsLabel "Liver enhancers" "Kidney enhancers"
 
-computeMatrix reference-point --referencePoint center -b 1000 -a 1000 --binSize 25 \
+computeMatrix reference-point --referencePoint center -b 1000 -a 1000 --binSize 25 -p "$THREADS" \
     -R "$LIVER_ENHANCERS" "$KIDNEY_ENHANCERS" \
     -S "$LIVER_H3K4ME1" "$KIDNEY_H3K4ME1" \
     --samplesLabel "Liver E14.5 H3K4me1" "Kidney E14.5 H3K4me1" \
@@ -138,7 +168,7 @@ computeMatrix reference-point --referencePoint center -b 1000 -a 1000 --binSize 
     --outFileSortedRegions "$OUTROOT/enhancers_H3K4me1/sorted_regions.bed"
 render_heatmap "$OUTROOT/enhancers_H3K4me1/matrix.gz" "$OUTROOT/enhancers_H3K4me1" "enhancers_H3K4me1" "H3K4me1 signal around ChromHMM enhancers" "Greens" --refPointLabel "Enhancer centre" --regionsLabel "Liver enhancers" "Kidney enhancers"
 
-computeMatrix reference-point --referencePoint center -b 1000 -a 1000 --binSize 25 \
+computeMatrix reference-point --referencePoint center -b 1000 -a 1000 --binSize 25 -p "$THREADS" \
     -R "$LIVER_ENHANCERS" "$KIDNEY_ENHANCERS" \
     -S "$LIVER_H3K27AC" "$KIDNEY_H3K27AC" \
     --samplesLabel "Liver E14.5 H3K27ac" "Kidney E14.5 H3K27ac" \
@@ -165,19 +195,17 @@ for tissue in liver kidney; do
         LABEL="Kidney"
     fi
 
-    computeMatrix scale-regions -b 10000 -a 10000 --regionBodyLength 5000 --binSize 100 \
-        -R "$PMDS" -S "$ATAC" --samplesLabel "$LABEL E14.5 REP1 ATAC" --missingDataAsZero \
+    computeMatrix scale-regions -b 10000 -a 10000 --regionBodyLength 5000 --binSize 100 -p "$THREADS" \
+        -R "$PMDS" \
+        -S "$ATAC" \
+        --samplesLabel "$LABEL E14.5 REP1 ATAC" \
+        --missingDataAsZero \
         --outFileName "$OUTROOT/PMDs_ATAC/$tissue/matrix.gz" \
         --outFileSortedRegions "$OUTROOT/PMDs_ATAC/$tissue/sorted_regions.bed"
     render_heatmap "$OUTROOT/PMDs_ATAC/$tissue/matrix.gz" "$OUTROOT/PMDs_ATAC/$tissue" "${tissue}_PMDs_ATAC" "$LABEL ATAC accessibility across $LABEL PMDs" "YlOrRd" --startLabel "PMD start" --endLabel "PMD end" --regionsLabel "$LABEL PMDs"
 
-    computeMatrix scale-regions -b 10000 -a 10000 --regionBodyLength 5000 --binSize 100 \
-        -R "$PMDS" -S "$WGBS" --samplesLabel "$LABEL merged WGBS" --missingDataAsZero \
-        --outFileName "$OUTROOT/PMDs_WGBS/$tissue/matrix.gz" \
-        --outFileSortedRegions "$OUTROOT/PMDs_WGBS/$tissue/sorted_regions.bed"
-    render_heatmap "$OUTROOT/PMDs_WGBS/$tissue/matrix.gz" "$OUTROOT/PMDs_WGBS/$tissue" "${tissue}_PMDs_WGBS" "$LABEL DNA methylation across $LABEL PMDs" "RdYlBu_r" --startLabel "PMD start" --endLabel "PMD end" --regionsLabel "$LABEL PMDs"
-
-    computeMatrix scale-regions -b 10000 -a 10000 --regionBodyLength 5000 --binSize 100 \
-        -R "$PMDS" -S "$H3K9ME3" --samplesLabel "$LABEL E14.5 H3K9me3" --missingDataAsZero \
-        --outFileName "$OUTROOT/PMDs_H3K9me3/$tissue/matrix.gz" \
-        --outFileSortedRegions "$OUTROOT/PMDs_H3K9me3/$ti
+    computeMatrix scale-regions -b 10000 -a 10000 --regionBodyLength 5000 --binSize 100 -p "$THREADS" \
+        -R "$PMDS" \
+        -S "$WGBS" \
+        --samplesLabel "$LABEL merged WGBS" \
+        --missingDataAsZero 
