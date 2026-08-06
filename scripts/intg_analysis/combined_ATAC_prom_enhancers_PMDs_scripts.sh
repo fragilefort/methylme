@@ -13,7 +13,7 @@ LIVER_ENHANCERS="/vol/COMPEPIWS/groups/wgbs2/methylme/integrative_analysis_deept
 KIDNEY_ENHANCERS="/vol/COMPEPIWS/groups/wgbs2/methylme/integrative_analysis_deeptools_ROI/kidney_ChromHMM_enhancers.bed"
 
 # New output directory: this does not overwrite the aggregate-track results.
-OUTROOT="/vol/COMPEPIWS/groups/wgbs2/methylme/integrative_analysis_deeptools_ROI/ATACseq2_14_5_REP1"
+OUTROOT="/vol/COMPEPIWS/groups/wgbs2/methylme/integrative_analysis/integrative_analysis_deeptools_ROI/ATACseq2_14_5_REP1"
 PROMOTER_OUTDIR="$OUTROOT/promoters_ATAC"
 ENHANCER_OUTDIR="$OUTROOT/enhancers_ATAC"
 PMD_OUTDIR="$OUTROOT/PMDs_ATAC"
