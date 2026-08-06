@@ -10,7 +10,6 @@ suppressPackageStartupMessages({
 wgbs_mystery_file <- "/vol/COMPEPIWS/groups/shared/WGBS/wgbs2/differential/diff_meth_mystery_regions_annotated.csv"
 gene_gtf_file <- "/vol/COMPEPIWS/pipelines/references/mm10.reduced.refGene.gtf"
 deg_bed_file <- "/vol/COMPEPIWS/groups/shared/RNA-seq/rnaseq2/DEGs/DEGs_complete.bed"
-
 out_dir <- "/vol/COMPEPIWS/groups/wgbs2/methylme/integrative_analysis/rnaseq-wgbs/gene_symbol_heatmaps_from_gtf"
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
@@ -26,10 +25,10 @@ first_nonmissing <- function(x) {
 }
 
 if (Sys.which("bedtools") == "") {
-  stop("bedtools is not available in PATH. Load or activate an environment containing bedtools.")
+  stop("bedtools is not available in PATH. Activate an environment containing bedtools.")
 }
 
-# WGBS: g1 = Kidney, g2 = Liver.
+# WGBS: g1 = Kidney, g2 = Liver
 wgbs <- read_csv(wgbs_mystery_file, show_col_types = FALSE) %>%
   transmute(
     dmr_id = paste(Chromosome, Start, End, sep = ":"),
@@ -41,11 +40,12 @@ wgbs <- read_csv(wgbs_mystery_file, show_col_types = FALSE) %>%
     mean_difference = as.numeric(mean.mean.diff),
     fdr = as.numeric(comb.p.adj.fdr)
   ) %>%
-  filter(mean_difference > wgbs_mean_diff_cutoff, fdr <= wgbs_fdr_cutoff)
+  filter(mean_difference > wgbs_mean_diff_cutoff, fdr <= wgbs_fdr_cutoff) %>%
+  arrange(chr, start, end)
 
 message("WGBS DMRs passing filters: ", nrow(wgbs))
 
-# Local refGene GTF: retain transcript records only, then extract NM_ and gene symbols.
+# Read transcript records from the local refGene GTF.
 gtf_transcripts <- read_tsv(
   gene_gtf_file,
   col_names = FALSE,
@@ -68,11 +68,13 @@ gtf_transcripts <- read_tsv(
   ) %>%
   filter(!is.na(refseq_nm), !is.na(gene_symbol), gene_symbol != "") %>%
   select(chr, start_bed, end, gene_symbol, refseq_nm, strand) %>%
-  distinct()
+  distinct() %>%
+  arrange(chr, start_bed, end)
 
 message("Transcript records available in local GTF: ", nrow(gtf_transcripts))
 
-# BED coordinates are 0-based half-open, whereas the WGBS CSV starts are 1-based.
+# Make sorted temporary BED files. WGBS CSV start values are 1-based;
+# BED starts are 0-based, therefore start - 1 is used here.
 dmr_bed <- tempfile(fileext = ".bed")
 gtf_bed <- tempfile(fileext = ".bed")
 closest_out <- tempfile(fileext = ".tsv")
@@ -85,8 +87,8 @@ write_tsv(
 
 write_tsv(gtf_transcripts, gtf_bed, col_names = FALSE)
 
-# Assign each filtered DMR to its closest transcript using genomic coordinates.
-# -t first makes ties deterministic; -D a also records signed distance.
+# For each filtered DMR, assign the nearest GTF transcript.
+# A has four columns, B has six columns, then bedtools adds one distance column.
 status <- system2(
   "bedtools",
   args = c("closest", "-a", dmr_bed, "-b", gtf_bed, "-D", "a", "-t", "first"),
@@ -97,7 +99,6 @@ if (status != 0) {
   stop("bedtools closest failed.")
 }
 
-# Output fields: A has 4 columns; B has 6 columns; final column is distance.
 closest_gene <- read_tsv(closest_out, col_names = FALSE, show_col_types = FALSE) %>%
   transmute(
     dmr_id = as.character(X4),
@@ -120,7 +121,7 @@ if (nrow(wgbs_mapped) == 0) {
   stop("No DMRs were assigned to genes by bedtools closest.")
 }
 
-# Median-collapse DMRs assigned to the same gene.
+# Median-collapse all DMRs assigned to the same gene.
 wgbs_gene <- wgbs_mapped %>%
   group_by(gene_symbol = closest_gene_symbol) %>%
   summarise(
@@ -133,8 +134,8 @@ wgbs_gene <- wgbs_mapped %>%
     .groups = "drop"
   )
 
-# RNA BED columns: 4 gene symbol; 5 -log10(FDR); 6 log2FC;
-# 7 Kidney CPM; 8 Liver CPM; 9 Ensembl ID.
+# RNA BED: col4 gene symbol, col5 -log10(FDR), col6 log2FC,
+# col7 Kidney CPM, col8 Liver CPM, col9 Ensembl ID.
 rna <- read_tsv(deg_bed_file, col_names = FALSE, show_col_types = FALSE) %>%
   transmute(
     gene_symbol = as.character(X4),
@@ -166,7 +167,6 @@ rna_gene <- rna %>%
     .groups = "drop"
   )
 
-# Only genes passing both WGBS and RNA filters appear in both heatmaps.
 integrated_gene_data <- wgbs_gene %>%
   inner_join(rna_gene, by = "gene_symbol") %>%
   arrange(desc(median_mean_difference), desc(median_log2fc))
@@ -174,7 +174,7 @@ integrated_gene_data <- wgbs_gene %>%
 message("Final shared genes for both heatmaps: ", nrow(integrated_gene_data))
 
 if (nrow(integrated_gene_data) < 2) {
-  stop("Fewer than two shared genes remain after WGBS/RNA filtering and gene-symbol matching.")
+  stop("Fewer than two shared genes remain after filtering and gene-symbol matching.")
 }
 
 write_csv(integrated_gene_data, file.path(out_dir, "integrated_WGBS_RNA_gene_symbol_table.csv"))
