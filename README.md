@@ -351,3 +351,102 @@ Four of the top five promoters (5830416P10Rik, Olfr1425, Anxa1, and Ms4a6c) are 
 4474   0.0005185470
 4012   0.0004823422
 ```
+
+
+# 3.3 Exploratory Analysis
+
+## PCA and scree plot:
+
+<img width="2700" height="1800" alt="PCA_scree_plot" src="https://github.com/user-attachments/assets/ba089df7-8a83-441c-a693-caa13828612d" />
+
+<img width="3000" height="2100" alt="PCA_top_10000_variable_CpGs" src="https://github.com/user-attachments/assets/1060628f-b1a6-493c-8c8b-658795ea5392" />
+
+## Density plot comparing methylation levels in the different sample groups:
+
+
+<img width="3000" height="2100" alt="Density_methylation_by_tissue" src="https://github.com/user-attachments/assets/02ecc4a1-748a-43c8-9b43-83f0f4d5fc49" />
+
+
+<img width="3300" height="2100" alt="Density_methylation_tissue_by_timepoint" src="https://github.com/user-attachments/assets/bca8612d-0dc9-4566-9408-afedc0a34a94" />
+
+- Yes the distribution is different as we can see that the Kidney has a higher methylation than the liver and also the difference in time-points didn't create any major difference in the distribution.
+
+## Density plot comparing methylation levels in the different GC-contexts:
+
+
+<img width="3000" height="2100" alt="Density_methylation_by_CpG_context" src="https://github.com/user-attachments/assets/d3dd599b-a219-4a65-b337-3803ed0f899d" />
+
+- Yes we can see distribution is different as we can see that at 0 beta methylation value the highest density is for the islands while the shores and shelf has low density and as we increase the beta methylation value the density for islands decreases until we have at 1 beta methylation value, the shelf then shores then islands with highest distribution respectively.
+
+## Heatmap for the 1,000 most variable sites:
+
+
+<img width="3000" height="3600" alt="Heatmap_top_1000_variable_CpGs" src="https://github.com/user-attachments/assets/2f80d8b1-bda0-4010-a262-6b75aa65812d" />
+
+## Heatmap for the 100 most variable of these mystery regions:
+
+
+<img width="3000" height="3000" alt="Heatmap_top_100_variable_mystery_regions" src="https://github.com/user-attachments/assets/38b78ccf-444b-44de-86dd-4a0e8c1f41f2" />
+
+## Boxplots to compare the samples to each other:
+
+<img width="3000" height="2100" alt="Boxplot_global_methylation_by_group" src="https://github.com/user-attachments/assets/b56b1f6b-2e10-49de-b607-9d8484393984" />
+
+<img width="4200" height="2100" alt="Boxplot_global_methylation_by_sample" src="https://github.com/user-attachments/assets/95814f41-8aac-4972-b96a-bd2e625db756" />
+
+- Yes we can see that also like density plot, we have a higher methylation level for kidneys with respect to the liver.
+
+## 9
+
+## 10
+
+## 11
+
+## Comparing the segmentation to the raw methylation signal:
+
+
+<img width="1803" height="697" alt="task 3 3 12" src="https://github.com/user-attachments/assets/970ad10a-1b1f-4080-87b2-01c2e0dd5016" />
+
+<img width="1777" height="771" alt="task 3 3 12 (2)" src="https://github.com/user-attachments/assets/8bfe6762-292c-4b92-9693-5d9ff4675ccc" />
+
+- As we can see also here it confirms that Kidney has slightly higher methylation than liver and the raw signal corresponds to raw signal files especially with UMR and HMR
+
+
+
+# 3.4 Exploring differential methylation
+
+## Explore differential methylation in IGV. Explore the top 5 regions you identified
+
+- Mystery region 1
+  - a) The region appears to be hypomethylated in kidney compared with liver. The liver track shows a clear methylation signal over the region, whereas the kidney track has little or no signal.
+  - b) The region is intergenic, because no RefSeq gene overlaps the displayed region.
+  - c) No annotated RefSeq gene is directly overlapping the region in this view.
+  - d) In liver, the region overlaps an LMR (low-methylated region). In kidney, it lies within a PMD (partially methylated domain).
+
+- Mystery region 2
+  - a) The region appears to be more methylated in kidney than in liver overall, although the liver signal changes across the displayed interval.
+  - b) The region is located in the gene body of Mirt1.
+  - c) The nearby and overlapping gene is Mirt1.
+  - d) In liver, the mystery region overlaps an LMR. In kidney, the whole displayed locus lies in a PMD.
+
+- Mystery region 3
+  - a) The region appears to be hypomethylated in kidney compared with liver.
+  - b) The region is located in the gene body of Mbp. The gene is on the reverse strand, as indicated by the left-facing arrows, but the mystery region still falls within its genomic span.
+  - c) The nearby and overlapping gene is Mbp.
+  - d) In liver, the region overlaps an HMR (high-methylated region). In kidney, it falls in a PMD.
+
+- Mystery region 4
+  - a) The region appears to be hypomethylated in kidney compared with liver. Liver has a stronger methylation signal across the locus, while kidney shows little signal.
+  - b) The region is in the gene body of Minpp1.
+  - c) The nearby and overlapping gene is Minpp1.
+  - d) In liver, the region overlaps an HMR. It is close to the transition from a UMR to an HMR, but the blue mystery interval itself is mainly within the HMR. In kidney, it lies in a PMD.
+
+- Mystery region 5
+  - a) The region appears to be hypomethylated in kidney compared with liver.
+  - b) The region is in the gene body of Prune2.
+  - c) The nearby and overlapping gene is Prune2.
+  - d) In liver, the region overlaps an LMR. In kidney, it lies within a PMD.
+- Overall interpretation
+The mystery regions are likely differentially methylated regions (DMRs) between kidney and liver. Most are hypomethylated in kidney relative to liver, and all overlap kidney PMDs. Four of the five regions occur within gene bodies, while mystery region 1 is intergenic.
+
+The pattern suggests that these regions may reflect tissue-specific epigenetic regulation. In particular, liver LMRs could represent regulatory regions with relatively low methylation, while the kidney PMD overlap suggests broader, partially methylated chromatin domains in kidney. PMDs are typically large-scale domains associated with lower or more variable methylation and often with reduced gene activity.
