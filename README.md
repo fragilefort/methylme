@@ -630,4 +630,127 @@ Together, these observations indicate that the region has a kidney-specific regu
 ---
 
 
+# Summarize signals over regions of interest
 
+- a) Mind the gene direction and use 1500bp downstream and 500bp upstream of the TSS. Explain in
+1–2 sentences how your script handles coordinate calculation for genes on the minus (−) strand
+versus the plus (+) strand to prevent 0-length or reversed interval errors
+
+For plus-strand genes, the transcription start site (TSS) is located at the gene start coordinate (`$2`). The promoter interval is therefore defined as 500 bp upstream and 1,500 bp downstream of the TSS:
+
+```text
+start = $2 - 500
+end   = $2 + 1500
+```
+
+For minus-strand genes, the TSS is located at the gene end coordinate (`$3`). Since transcription proceeds toward decreasing genomic coordinates on the minus strand, the promoter interval is calculated as:
+
+```text
+start = $3 - 1500
+end   = $3 + 500
+```
+
+The script replaces negative start coordinates with `0` and writes an interval only if `end > start`. This prevents invalid genomic coordinates, zero-length intervals, and reversed intervals.
+
+  b) Combine computeMatrix with plotHeatmap/plotProfile from deepTools22 to generate plots. e.g.
+histone mark/accessibility/DNA methylation signals across all/some of the above mentioned ROI. What
+do you observe? Explain your findings from a gene-regulation perspective
+
+<img width="1450" height="693" alt="image" src="https://github.com/user-attachments/assets/f9b587f8-0d64-4295-aa85-e8fdd920796c" />
+
+<img width="1422" height="693" alt="image" src="https://github.com/user-attachments/assets/52814ddd-533e-4242-952e-445b1bcd0497" />
+
+<img width="1422" height="693" alt="image" src="https://github.com/user-attachments/assets/d49a70e7-d83d-4a27-9661-29931d1fc621" />
+
+
+---
+
+## 1. Promoter profiles in liver and kidney
+
+The promoter heatmaps and average profiles show a clear signal centered at the TSS. ATAC-seq has a narrow, sharp accessibility peak at or very close to the TSS. This represents a nucleosome-free region, where DNA is accessible to transcription factors and RNA polymerase II.
+
+H3K4me3 is enriched around the promoter, with a broader peak shifted slightly downstream of the TSS. This pattern is consistent with H3K4me3 on the +1 nucleosome immediately downstream of an active promoter. H3K4me3 is therefore associated with transcription initiation and active promoter chromatin.
+
+The WGBS profile shows a methylation minimum at the TSS. This local reduction in methylation corresponds to an unmethylated region (UMR), which is expected at active promoters because methylation can interfere with transcription-factor binding and transcription initiation. Moving downstream from the TSS into the gene body, the methylation level rises again. This is consistent with gene-body hypermethylation, which can coexist with active transcription.
+
+The same basic promoter architecture is visible in both tissues, but the liver profile has stronger mean ATAC-seq and H3K4me3 signal than kidney in these plots. The stronger liver signals are consistent with more widespread or stronger promoter activity in the profiled fetal liver samples. .
+
+### Promoter interpretation
+
+| Signal | Pattern around the TSS | Gene-regulation interpretation |
+|---|---|---|
+| ATAC-seq | Sharp peak at the TSS | Open, nucleosome-depleted promoter that permits transcription-factor and polymerase binding |
+| H3K4me3 | Broad enrichment around the TSS, often slightly downstream | Active promoter and transcription-initiation-associated chromatin |
+| WGBS methylation | Valley at the TSS, increasing into the gene body | Unmethylated promoter; methylated gene body is compatible with transcription |
+
+So we can conclude by saying active promoters are characterized by the convergence of low DNA methylation, high accessibility, and H3K4me3 enrichment at the TSS.
+
+---
+
+## 2. Kidney enhancer profiles
+
+The kidney enhancer heatmaps show the expected enhancer-associated combination of broad H3K4me1 enrichment, localized H3K27ac signal, reduced methylation, and ATAC-seq accessibility.
+
+H3K4me1 forms a broad signal across the enhancer region. This mark identifies enhancer-associated chromatin and can be present at both primed and active enhancers. H3K27ac is more concentrated near the enhancer center and distinguishes active enhancers from merely poised ones. Therefore, regions with both H3K4me1 and H3K27ac are likely active kidney enhancers.
+
+The WGBS signal shows a local decrease in DNA methylation at enhancer centers, consistent with low-methylated regions (LMRs). This may occur because transcription-factor binding and open chromatin are associated with localized loss or exclusion of DNA methylation.
+
+The ATAC-seq profile is centered on the enhancer. The profile may show accessible shoulders surrounding a lower central signal. This shape is compatible with transcription-factor footprinting: a bound factor can protect its exact binding site from Tn5 insertion, while nearby DNA remains accessible.
+
+### Kidney enhancer
+
+| Signal | Observed pattern | Gene-regulation interpretation |
+|---|---|---|
+| H3K4me1 | Broad enrichment across enhancer regions | Marks primed or active enhancer chromatin |
+| H3K27ac | More localized enrichment near the center | Indicates active enhancer activity |
+| WGBS methylation | Local methylation decrease / LMR | Compatible with regulatory DNA and transcription-factor binding |
+| ATAC-seq | Central accessibility with possible footprint pattern | Open enhancer chromatin; possible factor occupancy at the center |
+
+So we can conclude by saying kidney enhancer ROIs have a regulatory signature of H3K4me1, H3K27ac, chromatin accessibility, and local hypomethylation. These features are consistent with enhancer activity in kidney.
+
+---
+
+## 3. Liver enhancer profiles
+
+The liver enhancer plots show the same general enhancer architecture, but with very strong H3K27ac signal in the highest-intensity rows of the heatmap. Such a strong enrichment is consistent with a subset of highly active liver enhancers and may include super-enhancer-like regions. These regions are candidates for regulating genes important for liver identity and fetal liver function.
+
+As in kidney, H3K4me1 is broad across the enhancer domain, whereas H3K27ac is more focused at the active enhancer core. WGBS shows lower methylation at enhancer centers, consistent with LMRs. The ATAC-seq profile shows central accessibility and can contain a central dip with accessible flanking shoulders, again consistent with transcription-factor occupancy at the central motif.
+
+This pattern is biologically plausible for liver-specific regulatory elements. Liver transcription factors, such as HNF4A, FOXA-family factors, or CEBP-family factors, could bind enhancer DNA, promote accessible chromatin, and recruit co-activators that deposit H3K27ac.
+
+### Liver enhancer
+
+| Signal | Observed pattern | Gene-regulation interpretation |
+|---|---|---|
+| H3K4me1 | Broad enhancer-associated profile | Primed or active enhancer domain |
+| H3K27ac | Strong, focused signal; especially intense in the top heatmap rows | Active enhancer core; strongest regions may be super-enhancer-like |
+| WGBS methylation | Local methylation valley / LMR | Regulatory DNA with low methylation, consistent with factor binding |
+| ATAC-seq | Accessible flanks and possible central footprint | Open chromatin and possible transcription-factor binding |
+
+So we can conclude by saying liver enhancer ROIs are enriched for features of active enhancers. The very strong H3K27ac signal at a subset of loci suggests particularly active liver regulatory elements.
+
+---
+
+## 4. Gene-regulation perspective
+
+The three deepTools analyses support a coherent model of gene regulation:
+
+```text
+Active promoter:
+low DNA methylation + ATAC-seq accessibility + H3K4me3
+→ transcription initiation
+
+Active enhancer:
+LMR / local hypomethylation + ATAC-seq accessibility + H3K4me1 + H3K27ac
+→ tissue-specific activation of target genes
+
+Gene body:
+increased DNA methylation downstream of the TSS, often with H3K36me3
+→ compatible with transcription elongation
+```
+
+Promoters are generally shared regulatory units required for transcription initiation, so both tissues show the same basic promoter profile. Enhancers provide more tissue specificity: enhancer activity differs according to which transcription factors, chromatin marks, and accessible regions are present in each tissue.
+
+The inverse relationship between WGBS methylation and ATAC-seq accessibility is especially clear at regulatory elements. Promoters and enhancers that are accessible tend to be locally hypomethylated, while methylated chromatin tends to be less accessible. This relationship is an association rather than proof that methylation alone causes accessibility changes; both can be shaped by transcription-factor binding and chromatin-remodeling activity.
+
+---
