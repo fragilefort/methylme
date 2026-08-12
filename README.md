@@ -446,7 +446,50 @@ Four of the top five promoters (5830416P10Rik, Olfr1425, Anxa1, and Ms4a6c) are 
   - b) The region is in the gene body of Prune2.
   - c) The nearby and overlapping gene is Prune2.
   - d) In liver, the region overlaps an LMR. In kidney, it lies within a PMD.
-- Overall interpretation
-The mystery regions are likely differentially methylated regions (DMRs) between kidney and liver. Most are hypomethylated in kidney relative to liver, and all overlap kidney PMDs. Four of the five regions occur within gene bodies, while mystery region 1 is intergenic.
+- Overall interpretation:
+  - The five mystery regions are tissue-specific DMRs. Region 1 is an intergenic LMR and is therefore a candidate distal enhancer-like DMR. Regions 2 and 5 are intragenic LMRs and may represent intragenic enhancer-like elements. Regions 3 and 4 are gene-body DMRs overlapping HMRs and are less likely to be enhancer-associated. None of the regions clearly overlaps a promoter, since none lies at an annotated transcription start site or within a UMR.
 
-The pattern suggests that these regions may reflect tissue-specific epigenetic regulation. In particular, liver LMRs could represent regulatory regions with relatively low methylation, while the kidney PMD overlap suggests broader, partially methylated chromatin domains in kidney. PMDs are typically large-scale domains associated with lower or more variable methylation and often with reduced gene activity.
+# Summary questions:
+
+## 1. Is normalization performed for WGBS data? Explain your answer.
+
+WGBS data are not normalized in the same way as RNA-seq count data. RNA-seq commonly uses library-size normalization because the main measurement is the number of reads assigned to a gene. In WGBS, methylation is usually measured at each CpG as a proportion of methylated reads:
+
+\[
+\text{Methylation level} = \frac{\text{methylated reads}}{\text{methylated reads} + \text{unmethylated reads}}
+\]
+
+For example, if 8 out of 10 reads at a CpG are methylated, the estimated methylation level is 80%. This calculation already accounts for the local number of reads at that CpG.
+
+However, WGBS data still require quality control and processing. CpGs with very low coverage are normally filtered because a methylation estimate based on one or two reads is unreliable. During differential methylation analysis, the coverage at each CpG should also be considered: 50% methylation based on 2 reads is much less reliable than 50% methylation based on 100 reads. It may also be necessary to correct for technical factors such as batch effects or incomplete bisulfite conversion.
+
+Therefore, WGBS does not usually use a simple global read-depth normalization such as CPM. Instead, it uses methylation proportions, coverage filtering, and statistical models that account for methylated and unmethylated read counts.
+
+## 2. What are the mystery regions?
+
+The mystery regions are differentially methylated regions (DMRs) between kidney and liver. Based on their location relative to genes and their methylation-segmentation category, they can be interpreted as follows:
+
+
+Region 1 is the strongest candidate for a distal enhancer-like DMR because it is intergenic and overlaps an LMR in liver. Regions 2 and 5 are located within gene bodies but also overlap liver LMRs. Since enhancers can occur inside genes, these are possible intragenic enhancer-like DMRs.
+
+Regions 3 and 4 are located in gene bodies and overlap liver HMRs. They are better described as gene-body DMRs than as enhancers. None of the mystery regions clearly overlaps an annotated transcription start site or a UMR, so none is a strong candidate for a classical promoter DMR.
+
+The enhancer-like labels are predictions based on methylation patterns and genomic position. Confirmation would require additional evidence, such as chromatin accessibility, enhancer-associated histone marks, gene-expression correlation, or chromatin-contact data.
+
+## 3. Explain what UMR, LMR, HMR, and PMD are.
+
+### UMR: Unmethylated Region
+
+A UMR is a genomic region with very low or nearly absent DNA methylation. UMRs are often CpG-rich and commonly occur at CpG islands and active gene promoters.
+
+### LMR: Low-Methylated Region
+
+An LMR has low, but not completely absent, DNA methylation. LMRs are often associated with distal regulatory elements, including transcription-factor binding sites and enhancer-like regions. However, an LMR alone is not sufficient to prove that a region is an enhancer.
+
+### HMR: Highly Methylated Region
+
+An HMR is a region with high DNA methylation. These regions make up much of the genomic background outside unmethylated promoters, CpG islands, and some regulatory elements. HMRs can occur in gene bodies or intergenic regions.
+
+### PMD: Partially Methylated Domain
+
+A PMD is a large genomic domain with intermediate or variable methylation rather than consistently high methylation. PMDs are often associated with heterochromatin, low gene density, low gene expression, and cellular proliferation history. A DMR inside a PMD should be interpreted carefully because it may reflect a broad domain-level methylation difference rather than a local regulatory event.
