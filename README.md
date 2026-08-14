@@ -358,3 +358,406 @@ Four of the top five promoters (5830416P10Rik, Olfr1425, Anxa1, and Ms4a6c) are 
 4474   0.0005185470
 4012   0.0004823422
 ```
+
+
+# 3.3 Exploratory Analysis
+
+## PCA and scree plot:
+
+<img width="2700" height="1800" alt="PCA_scree_plot" src="https://github.com/user-attachments/assets/ba089df7-8a83-441c-a693-caa13828612d" />
+
+<img width="3000" height="2100" alt="PCA_top_10000_variable_CpGs" src="https://github.com/user-attachments/assets/1060628f-b1a6-493c-8c8b-658795ea5392" />
+
+## Density plot comparing methylation levels in the different sample groups:
+
+
+<img width="3000" height="2100" alt="Density_methylation_by_tissue" src="https://github.com/user-attachments/assets/02ecc4a1-748a-43c8-9b43-83f0f4d5fc49" />
+
+
+<img width="3300" height="2100" alt="Density_methylation_tissue_by_timepoint" src="https://github.com/user-attachments/assets/bca8612d-0dc9-4566-9408-afedc0a34a94" />
+
+- Yes the distribution is different as we can see that the Kidney has a higher methylation than the liver and also the difference in time-points didn't create any major difference in the distribution.
+
+## Density plot comparing methylation levels in the different GC-contexts:
+
+
+<img width="3000" height="2100" alt="Density_methylation_by_CpG_context" src="https://github.com/user-attachments/assets/d3dd599b-a219-4a65-b337-3803ed0f899d" />
+
+- Yes we can see distribution is different as we can see that at 0 beta methylation value the highest density is for the islands while the shores and shelf has low density and as we increase the beta methylation value the density for islands decreases until we have at 1 beta methylation value, the shelf then shores then islands with highest distribution respectively.
+
+## Heatmap for the 1,000 most variable sites:
+
+
+<img width="3000" height="3600" alt="Heatmap_top_1000_variable_CpGs" src="https://github.com/user-attachments/assets/2f80d8b1-bda0-4010-a262-6b75aa65812d" />
+
+## Heatmap for the 100 most variable of these mystery regions:
+
+
+<img width="3000" height="3000" alt="Heatmap_top_100_variable_mystery_regions" src="https://github.com/user-attachments/assets/38b78ccf-444b-44de-86dd-4a0e8c1f41f2" />
+
+## Boxplots to compare the samples to each other:
+
+<img width="3000" height="2100" alt="Boxplot_global_methylation_by_group" src="https://github.com/user-attachments/assets/b56b1f6b-2e10-49de-b607-9d8484393984" />
+
+<img width="4200" height="2100" alt="Boxplot_global_methylation_by_sample" src="https://github.com/user-attachments/assets/95814f41-8aac-4972-b96a-bd2e625db756" />
+
+- Yes we can see that also like density plot, we have a higher methylation level for kidneys with respect to the liver.
+
+## 9
+
+## 10
+
+## 11
+
+## Comparing the segmentation to the raw methylation signal:
+
+
+<img width="1803" height="697" alt="task 3 3 12" src="https://github.com/user-attachments/assets/970ad10a-1b1f-4080-87b2-01c2e0dd5016" />
+
+<img width="1777" height="771" alt="task 3 3 12 (2)" src="https://github.com/user-attachments/assets/8bfe6762-292c-4b92-9693-5d9ff4675ccc" />
+
+- As we can see also here it confirms that Kidney has slightly higher methylation than liver and the raw signal corresponds to raw signal files especially with UMR and HMR
+
+
+
+# 3.4 Exploring differential methylation
+
+## Explore differential methylation in IGV. Explore the top 5 regions you identified
+
+- Mystery region 1
+  - a) The region appears to be hypomethylated in kidney compared with liver. The liver track shows a clear methylation signal over the region, whereas the kidney track has little or no signal.
+  - b) The region is intergenic, because no RefSeq gene overlaps the displayed region.
+  - c) No annotated RefSeq gene is directly overlapping the region in this view.
+  - d) In liver, the region overlaps an LMR (low-methylated region). In kidney, it lies within a PMD (partially methylated domain).
+
+- Mystery region 2
+  - a) The region appears to be more methylated in kidney than in liver overall, although the liver signal changes across the displayed interval.
+  - b) The region is located in the gene body of Mirt1.
+  - c) The nearby and overlapping gene is Mirt1.
+  - d) In liver, the mystery region overlaps an LMR. In kidney, the whole displayed locus lies in a PMD.
+
+- Mystery region 3
+  - a) The region appears to be hypomethylated in kidney compared with liver.
+  - b) The region is located in the gene body of Mbp. The gene is on the reverse strand, as indicated by the left-facing arrows, but the mystery region still falls within its genomic span.
+  - c) The nearby and overlapping gene is Mbp.
+  - d) In liver, the region overlaps an HMR (high-methylated region). In kidney, it falls in a PMD.
+
+- Mystery region 4
+  - a) The region appears to be hypomethylated in kidney compared with liver. Liver has a stronger methylation signal across the locus, while kidney shows little signal.
+  - b) The region is in the gene body of Minpp1.
+  - c) The nearby and overlapping gene is Minpp1.
+  - d) In liver, the region overlaps an HMR. It is close to the transition from a UMR to an HMR, but the blue mystery interval itself is mainly within the HMR. In kidney, it lies in a PMD.
+
+- Mystery region 5
+  - a) The region appears to be hypomethylated in kidney compared with liver.
+  - b) The region is in the gene body of Prune2.
+  - c) The nearby and overlapping gene is Prune2.
+  - d) In liver, the region overlaps an LMR. In kidney, it lies within a PMD.
+- Overall interpretation:
+  - The five mystery regions are tissue-specific DMRs. Region 1 is an intergenic LMR and is therefore a candidate distal enhancer-like DMR. Regions 2 and 5 are intragenic LMRs and may represent intragenic enhancer-like elements. Regions 3 and 4 are gene-body DMRs overlapping HMRs and are less likely to be enhancer-associated. None of the regions clearly overlaps a promoter, since none lies at an annotated transcription start site or within a UMR.
+
+# Summary questions:
+
+## 1. Is normalization performed for WGBS data? Explain your answer.
+
+WGBS data are not normalized in the same way as RNA-seq count data. RNA-seq commonly uses library-size normalization because the main measurement is the number of reads assigned to a gene. In WGBS, methylation is usually measured at each CpG as a proportion of methylated reads:
+
+\[
+\text{Methylation level} = \frac{\text{methylated reads}}{\text{methylated reads} + \text{unmethylated reads}}
+\]
+
+For example, if 8 out of 10 reads at a CpG are methylated, the estimated methylation level is 80%. This calculation already accounts for the local number of reads at that CpG.
+
+However, WGBS data still require quality control and processing. CpGs with very low coverage are normally filtered because a methylation estimate based on one or two reads is unreliable. During differential methylation analysis, the coverage at each CpG should also be considered: 50% methylation based on 2 reads is much less reliable than 50% methylation based on 100 reads. It may also be necessary to correct for technical factors such as batch effects or incomplete bisulfite conversion.
+
+Therefore, WGBS does not usually use a simple global read-depth normalization such as CPM. Instead, it uses methylation proportions, coverage filtering, and statistical models that account for methylated and unmethylated read counts.
+
+## 2. What are the mystery regions?
+
+The mystery regions are differentially methylated regions (DMRs) between kidney and liver. Based on their location relative to genes and their methylation-segmentation category, they can be interpreted as follows:
+
+
+Region 1 is the strongest candidate for a distal enhancer-like DMR because it is intergenic and overlaps an LMR in liver. Regions 2 and 5 are located within gene bodies but also overlap liver LMRs. Since enhancers can occur inside genes, these are possible intragenic enhancer-like DMRs.
+
+Regions 3 and 4 are located in gene bodies and overlap liver HMRs. They are better described as gene-body DMRs than as enhancers. None of the mystery regions clearly overlaps an annotated transcription start site or a UMR, so none is a strong candidate for a classical promoter DMR.
+
+The enhancer-like labels are predictions based on methylation patterns and genomic position. Confirmation would require additional evidence, such as chromatin accessibility, enhancer-associated histone marks, gene-expression correlation, or chromatin-contact data.
+
+## 3. Explain what UMR, LMR, HMR, and PMD are.
+
+### UMR: Unmethylated Region
+
+A UMR is a genomic region with very low or nearly absent DNA methylation. UMRs are often CpG-rich and commonly occur at CpG islands and active gene promoters.
+
+### LMR: Low-Methylated Region
+
+An LMR has low, but not completely absent, DNA methylation. LMRs are often associated with distal regulatory elements, including transcription-factor binding sites and enhancer-like regions. However, an LMR alone is not sufficient to prove that a region is an enhancer.
+
+### HMR: Highly Methylated Region
+
+An HMR is a region with high DNA methylation. These regions make up much of the genomic background outside unmethylated promoters, CpG islands, and some regulatory elements. HMRs can occur in gene bodies or intergenic regions.
+
+### PMD: Partially Methylated Domain
+
+A PMD is a large genomic domain with intermediate or variable methylation rather than consistently high methylation. PMDs are often associated with heterochromatin, low gene density, low gene expression, and cellular proliferation history. A DMR inside a PMD should be interpreted carefully because it may reflect a broad domain-level methylation difference rather than a local regulatory event.
+
+
+# Integrative analysis using IGV
+
+
+## Question 1: General methylation states of promoters and gene bodies
+
+In general, active gene promoters are lowly methylated or unmethylated, whereas the bodies of actively transcribed genes are often highly methylated.
+
+At active promoters, low DNA methylation allows transcription factors and RNA polymerase II to bind DNA. These promoters commonly overlap unmethylated regions (UMRs), CpG islands, active promoter chromatin states, and H3K4me3 peaks. In contrast, promoter hypermethylation is generally associated with reduced accessibility and transcriptional silencing.
+
+Gene bodies frequently show high DNA methylation even when the gene is actively expressed. This is not contradictory: gene-body methylation can suppress inappropriate internal transcription start sites and is often found together with the transcription-elongation mark H3K36me3.
+
+
+| Genomic region | Typical methylation state in an active gene | Main interpretation |
+|---|---|---|
+| Promoter / transcription start site | Low or unmethylated | Supports transcription-factor and RNA polymerase binding |
+| Gene body | Often highly methylated | Compatible with active transcription and may suppress cryptic internal initiation |
+| Silenced promoter | Often highly methylated | Usually associated with closed chromatin and reduced transcription |
+
+<img width="1536" height="710" alt="q1) liver_specific_diff_meth" src="https://github.com/user-attachments/assets/9fd48a0d-93a2-49fd-b7b2-a2f38997baae" />
+
+<img width="1536" height="710" alt="q1) liver_specific_diff_meth_gene_2" src="https://github.com/user-attachments/assets/431121f2-d51b-4b19-8e3d-1e9deade99e4" />
+
+<img width="1536" height="710" alt="q1) liver_specific_diff_meth_gene_3" src="https://github.com/user-attachments/assets/1c18dd16-3026-4c91-980d-47bf456a3ba0" />
+
+
+---
+
+## Question 2: Overlap between MethylSeekR and ChromHMM states
+
+The DNA-methylation segmentation produced by MethylSeekR is consistent with the chromatin-state segmentation generated by ChromHMM.
+
+| MethylSeekR state | Typical overlapping ChromHMM state | Interpretation |
+|---|---|---|
+| UMR: unmethylated region | Active promoter (`7_Pr_A`) or flanking promoter (`6_Pr_F`) | Active or potentially active promoter, often near a transcription start site |
+| LMR: low-methylated region | Active enhancer (`8_Enh_A`) or weak enhancer (`9_Enh_W`) | Candidate distal or intragenic regulatory element |
+| HMR: highly methylated region | Strong transcription (`12_Tx_S`), weak transcription (`11_Tx_W`), or transcription transition (`10_Tx_T`) | Often found in transcribed gene bodies |
+| PMD: partially methylated domain | No signal / quiescent (`15_NS`) or weak heterochromatin (`14_Het_W`) | Broad inactive or weakly active chromatin domain |
+
+UMRs were observed at promoter regions, LMRs at enhancer-like regions, HMRs across transcribed gene bodies, and PMDs in broad inactive or heterochromatic regions. This agreement supports the biological consistency of the segmentation tracks.
+
+---
+
+## Question 3: ATAC-seq peaks and chromatin states
+
+ATAC-seq peaks preferentially overlap open and regulatory chromatin states. The clearest overlap is with active promoters and enhancer states.
+
+- Strong ATAC-seq peaks were observed at active and flanking promoters (`7_Pr_A` and `6_Pr_F`). These regions are accessible because transcription factors and RNA polymerase need access to the DNA.
+- ATAC-seq peaks also overlap active and weak enhancer states (`8_Enh_A` and `9_Enh_W`). These peaks often occur at tissue-specific regulatory regions.
+- In contrast, ATAC-seq signal is weak or absent in transcribed gene-body states (`10_Tx_T`, `11_Tx_W`, and `12_Tx_S`) and in repressed or quiescent chromatin (`14_Het_W` and `15_NS`).
+
+Therefore, chromatin accessibility is concentrated at promoters and enhancers rather than being distributed uniformly across gene bodies.
+
+---
+
+## Question 4: Examples of unexpressed genes
+
+Several examples of unexpressed genes were identified. These genes show little or no RNA-seq signal and are associated with repressive chromatin features.
+
+<img width="1536" height="710" alt="q4) gene1_example" src="https://github.com/user-attachments/assets/0e86b468-0750-4a71-84ee-0de5db477caf" />
+
+<img width="1536" height="710" alt="q4) gene1_example_rest_of_png" src="https://github.com/user-attachments/assets/96bdb286-2be4-4a08-8740-b674764335c6" />
+
+<img width="1536" height="710" alt="q4) gene2_example" src="https://github.com/user-attachments/assets/0e5fae02-e369-4426-b64f-7fb18a8521c0" />
+
+<img width="1536" height="710" alt="q4) gene2_example_rest_of_png" src="https://github.com/user-attachments/assets/58d57539-09a0-43b3-a1dc-295084921d8c" />
+
+<img width="1536" height="710" alt="q4) gene3_example" src="https://github.com/user-attachments/assets/bfca6821-89eb-4c41-b2f6-97b8c2b5d95a" />
+
+<img width="1536" height="710" alt="q4) gene3_example_rest_of_png" src="https://github.com/user-attachments/assets/abd4d34a-856a-495f-af1e-e91ac01d42e9" />
+
+
+### Example 1: *Mro*
+
+*Mro* has no detectable RNA-seq signal in the inspected liver tracks. Its promoter and gene body are highly methylated. The locus is enriched for repressive histone marks, including H3K27me3 and H3K9me3, while active marks such as H3K27ac and H3K36me3 are absent or near background. The promoter is classified as a bivalent / poised promoter state (`4_Pr_B`), indicating the coexistence of H3K4me3 with repressive H3K27me3. This state is compatible with a gene that is poised but currently silent.
+
+### Example 2: *Mapk4*
+
+*Mapk4* is also not expressed in the inspected liver sample. Its promoter is unmethylated, but the locus is classified as bivalent / poised (`4_Pr_B`) and is enriched for H3K27me3. H3K27ac is absent, so the promoter lacks the active acetylation mark needed for active transcription. This shows that unmethylated promoter DNA alone is not sufficient for expression when repressive chromatin marks are present.
+
+### Example 3: *Gm32661* and *Gm32801*
+
+These loci are unexpressed and occur in broad repressive chromatin. They show enrichment of H3K9me3 and H3K27me3, little or no active-mark signal, low or absent ATAC-seq accessibility, and PMD / quiescent or weak-heterochromatin segmentation. These features are consistent with heterochromatic silencing.
+
+| Gene / locus | RNA-seq expression | Promoter / body methylation | Major chromatin features | Interpretation |
+|---|---|---|---|---|
+| *Mro* | Not detected | Promoter and body highly methylated | H3K27me3 and H3K9me3; bivalent / poised promoter | Repressed or poised silent gene |
+| *Mapk4* | Not detected | Promoter unmethylated; body highly methylated | H3K4me3 plus H3K27me3; no H3K27ac; bivalent promoter | Poised but inactive gene |
+| *Gm32661* / *Gm32801* | Not detected | Broad PMD-associated methylation pattern | H3K9me3 and H3K27me3; no active marks; no ATAC peaks | Heterochromatin-associated silencing |
+
+---
+
+## Question 5: Associations between epigenetic layers and expression
+
+The data show clear associations between DNA methylation, chromatin accessibility, histone modifications, chromatin state, and gene expression. These associations depend strongly on genomic context.
+
+### Promoters
+
+At promoters, DNA methylation is generally negatively associated with expression. Active promoters are usually unmethylated, accessible by ATAC-seq, enriched for H3K4me3 and H3K27ac, and classified as active promoter or flanking-promoter chromatin. Inactive promoters often show hypermethylation and/or repressive histone marks such as H3K27me3 and H3K9me3.
+
+### Gene bodies
+
+Gene-body methylation has a different relationship with expression. Actively transcribed genes can have highly methylated bodies and strong H3K36me3 signal. Thus, high methylation within a gene body does not necessarily imply that the gene is inactive. ATAC-seq accessibility is generally lower across gene bodies than at promoters and enhancers.
+
+### Enhancers
+
+Enhancers tend to show low or intermediate methylation, ATAC-seq accessibility, and enhancer-associated histone marks such as H3K4me1 and H3K27ac. These features are positively associated with expression of their target genes, although target-gene assignment requires additional evidence.
+
+| Region type | DNA methylation | ATAC-seq accessibility | Typical histone marks | Expected expression state |
+|---|---|---|---|---|
+| Active promoter | Low / unmethylated | High | H3K4me3 and H3K27ac | High |
+| Silenced promoter | Often high, or repressed despite low methylation | Low | H3K27me3 and/or H3K9me3 | Low or absent |
+| Active gene body | Often high | Usually low | H3K36me3 | High |
+| Enhancer | Low or intermediate | High | H3K4me1, often H3K27ac | Associated with active target-gene regulation |
+| Heterochromatin / PMD | Variable or partially methylated | Low | H3K9me3 and/or H3K27me3 | Low or absent |
+
+A useful example is tissue-specific regulation of *Tnfaip8*: the liver locus has promoter / enhancer accessibility and active chromatin features, whereas the kidney locus is relatively closed and has lower expression.
+
+---
+
+## Question 6: Example of multi-omic regulation
+
+The **Tcf4 locus** on chromosome 18 provides an example of tissue-specific regulation supported by differential expression, DNA methylation, chromatin accessibility, and chromatin segmentation.
+
+The `DEGs_sig_01FDR_2FC.bed` track marks **Tcf4** as a differentially expressed gene. Around the displayed locus, the WGBS tracks show different methylation profiles in kidney and liver. In particular, the region around approximately 69.794–69.795 Mb has a much stronger kidney methylation signal than liver, and it overlaps one of the DMRs in the `mystery_diffmeth_sorted.bed` track. Thus, this is a differentially methylated regulatory region rather than simply a methylation difference elsewhere in the genome.
+
+The chromatin data also differ strongly between tissues. In liver, the complete interval is classified as `15_NS` (no signal / quiescent) in the 15-state ChromHMM segmentation, and there are no liver-specific ATAC-seq peaks in this view. In kidney, however, a kidney-specific ATAC-seq peak overlaps the DMR. The same area is classified as a flanking-promoter state (`6_Pr_F`) and adjacent weak-enhancer states (`9_Enh_W`) in the kidney 15-state segmentation.
+
+Together, these observations indicate that the region has a kidney-specific regulatory chromatin configuration: it is accessible in kidney and is annotated as promoter-flanking / enhancer-like chromatin, whereas the corresponding region is quiescent in liver. The overlapping DMR suggests that DNA methylation differs between the tissues at the same regulatory locus. Since Tcf4 is also differentially expressed, this provides a candidate example of coordinated regulation by DNA methylation and chromatin accessibility.
+
+
+<img width="1536" height="710" alt="igv_6_gene1" src="https://github.com/user-attachments/assets/85046b31-6a62-4aed-a1cd-6eaf2e4c521a" />
+
+---
+
+
+# Summarize signals over regions of interest
+
+- a) Mind the gene direction and use 1500bp downstream and 500bp upstream of the TSS. Explain in
+1–2 sentences how your script handles coordinate calculation for genes on the minus (−) strand
+versus the plus (+) strand to prevent 0-length or reversed interval errors
+
+For plus-strand genes, the transcription start site (TSS) is located at the gene start coordinate (`$2`). The promoter interval is therefore defined as 500 bp upstream and 1,500 bp downstream of the TSS:
+
+```text
+start = $2 - 500
+end   = $2 + 1500
+```
+
+For minus-strand genes, the TSS is located at the gene end coordinate (`$3`). Since transcription proceeds toward decreasing genomic coordinates on the minus strand, the promoter interval is calculated as:
+
+```text
+start = $3 - 1500
+end   = $3 + 500
+```
+
+The script replaces negative start coordinates with `0` and writes an interval only if `end > start`. This prevents invalid genomic coordinates, zero-length intervals, and reversed intervals.
+
+  b) Combine computeMatrix with plotHeatmap/plotProfile from deepTools22 to generate plots. e.g.
+histone mark/accessibility/DNA methylation signals across all/some of the above mentioned ROI. What
+do you observe? Explain your findings from a gene-regulation perspective
+
+<img width="1450" height="693" alt="image" src="https://github.com/user-attachments/assets/f9b587f8-0d64-4295-aa85-e8fdd920796c" />
+
+<img width="1422" height="693" alt="image" src="https://github.com/user-attachments/assets/52814ddd-533e-4242-952e-445b1bcd0497" />
+
+<img width="1422" height="693" alt="image" src="https://github.com/user-attachments/assets/d49a70e7-d83d-4a27-9661-29931d1fc621" />
+
+
+---
+
+## 1. Promoter profiles in liver and kidney
+
+The promoter heatmaps and average profiles show a clear signal centered at the TSS. ATAC-seq has a narrow, sharp accessibility peak at or very close to the TSS. This represents a nucleosome-free region, where DNA is accessible to transcription factors and RNA polymerase II.
+
+H3K4me3 is enriched around the promoter, with a broader peak shifted slightly downstream of the TSS. This pattern is consistent with H3K4me3 on the +1 nucleosome immediately downstream of an active promoter. H3K4me3 is therefore associated with transcription initiation and active promoter chromatin.
+
+The WGBS profile shows a methylation minimum at the TSS. This local reduction in methylation corresponds to an unmethylated region (UMR), which is expected at active promoters because methylation can interfere with transcription-factor binding and transcription initiation. Moving downstream from the TSS into the gene body, the methylation level rises again. This is consistent with gene-body hypermethylation, which can coexist with active transcription.
+
+The same basic promoter architecture is visible in both tissues, but the liver profile has stronger mean ATAC-seq and H3K4me3 signal than kidney in these plots. The stronger liver signals are consistent with more widespread or stronger promoter activity in the profiled fetal liver samples. .
+
+### Promoter interpretation
+
+| Signal | Pattern around the TSS | Gene-regulation interpretation |
+|---|---|---|
+| ATAC-seq | Sharp peak at the TSS | Open, nucleosome-depleted promoter that permits transcription-factor and polymerase binding |
+| H3K4me3 | Broad enrichment around the TSS, often slightly downstream | Active promoter and transcription-initiation-associated chromatin |
+| WGBS methylation | Valley at the TSS, increasing into the gene body | Unmethylated promoter; methylated gene body is compatible with transcription |
+
+So we can conclude by saying active promoters are characterized by the convergence of low DNA methylation, high accessibility, and H3K4me3 enrichment at the TSS.
+
+---
+
+## 2. Kidney enhancer profiles
+
+The kidney enhancer heatmaps show the expected enhancer-associated combination of broad H3K4me1 enrichment, localized H3K27ac signal, reduced methylation, and ATAC-seq accessibility.
+
+H3K4me1 forms a broad signal across the enhancer region. This mark identifies enhancer-associated chromatin and can be present at both primed and active enhancers. H3K27ac is more concentrated near the enhancer center and distinguishes active enhancers from merely poised ones. Therefore, regions with both H3K4me1 and H3K27ac are likely active kidney enhancers.
+
+The WGBS signal shows a local decrease in DNA methylation at enhancer centers, consistent with low-methylated regions (LMRs). This may occur because transcription-factor binding and open chromatin are associated with localized loss or exclusion of DNA methylation.
+
+The ATAC-seq profile is centered on the enhancer. The profile may show accessible shoulders surrounding a lower central signal. This shape is compatible with transcription-factor footprinting: a bound factor can protect its exact binding site from Tn5 insertion, while nearby DNA remains accessible.
+
+### Kidney enhancer
+
+| Signal | Observed pattern | Gene-regulation interpretation |
+|---|---|---|
+| H3K4me1 | Broad enrichment across enhancer regions | Marks primed or active enhancer chromatin |
+| H3K27ac | More localized enrichment near the center | Indicates active enhancer activity |
+| WGBS methylation | Local methylation decrease / LMR | Compatible with regulatory DNA and transcription-factor binding |
+| ATAC-seq | Central accessibility with possible footprint pattern | Open enhancer chromatin; possible factor occupancy at the center |
+
+So we can conclude by saying kidney enhancer ROIs have a regulatory signature of H3K4me1, H3K27ac, chromatin accessibility, and local hypomethylation. These features are consistent with enhancer activity in kidney.
+
+---
+
+## 3. Liver enhancer profiles
+
+The liver enhancer plots show the same general enhancer architecture, but with very strong H3K27ac signal in the highest-intensity rows of the heatmap. Such a strong enrichment is consistent with a subset of highly active liver enhancers and may include super-enhancer-like regions. These regions are candidates for regulating genes important for liver identity and fetal liver function.
+
+As in kidney, H3K4me1 is broad across the enhancer domain, whereas H3K27ac is more focused at the active enhancer core. WGBS shows lower methylation at enhancer centers, consistent with LMRs. The ATAC-seq profile shows central accessibility and can contain a central dip with accessible flanking shoulders, again consistent with transcription-factor occupancy at the central motif.
+
+This pattern is biologically plausible for liver-specific regulatory elements. Liver transcription factors, such as HNF4A, FOXA-family factors, or CEBP-family factors, could bind enhancer DNA, promote accessible chromatin, and recruit co-activators that deposit H3K27ac.
+
+### Liver enhancer
+
+| Signal | Observed pattern | Gene-regulation interpretation |
+|---|---|---|
+| H3K4me1 | Broad enhancer-associated profile | Primed or active enhancer domain |
+| H3K27ac | Strong, focused signal; especially intense in the top heatmap rows | Active enhancer core; strongest regions may be super-enhancer-like |
+| WGBS methylation | Local methylation valley / LMR | Regulatory DNA with low methylation, consistent with factor binding |
+| ATAC-seq | Accessible flanks and possible central footprint | Open chromatin and possible transcription-factor binding |
+
+So we can conclude by saying liver enhancer ROIs are enriched for features of active enhancers. The very strong H3K27ac signal at a subset of loci suggests particularly active liver regulatory elements.
+
+---
+
+## 4. Gene-regulation perspective
+
+The three deepTools analyses support a coherent model of gene regulation:
+
+```text
+Active promoter:
+low DNA methylation + ATAC-seq accessibility + H3K4me3
+→ transcription initiation
+
+Active enhancer:
+LMR / local hypomethylation + ATAC-seq accessibility + H3K4me1 + H3K27ac
+→ tissue-specific activation of target genes
+
+Gene body:
+increased DNA methylation downstream of the TSS, often with H3K36me3
+→ compatible with transcription elongation
+```
+
+Promoters are generally shared regulatory units required for transcription initiation, so both tissues show the same basic promoter profile. Enhancers provide more tissue specificity: enhancer activity differs according to which transcription factors, chromatin marks, and accessible regions are present in each tissue.
+
+The inverse relationship between WGBS methylation and ATAC-seq accessibility is especially clear at regulatory elements. Promoters and enhancers that are accessible tend to be locally hypomethylated, while methylated chromatin tends to be less accessible. This relationship is an association rather than proof that methylation alone causes accessibility changes; both can be shaped by transcription-factor binding and chromatin-remodeling activity.
+
+---

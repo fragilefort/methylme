@@ -7,10 +7,10 @@ KIDNEY_ATAC="/vol/COMPEPIWS/groups/shared/ATAC-seq/atacseq2/kidney_14.5_REP1.mLb
 
 # Existing region inputs on the cluster.
 GENES="/vol/COMPEPIWS/pipelines/references/mm10_reduced_chr18_chr19_genes.bed"
-LIVER_PMDS="/vol/COMPEPIWS/groups/wgbs2/methylme/integrative_analysis_deeptools_ROI/liver_PMDs.bed"
-KIDNEY_PMDS="/vol/COMPEPIWS/groups/wgbs2/methylme/integrative_analysis_deeptools_ROI/kidney_PMDs.bed"
-LIVER_ENHANCERS="/vol/COMPEPIWS/groups/wgbs2/methylme/integrative_analysis_deeptools_ROI/liver_ChromHMM_enhancers.bed"
-KIDNEY_ENHANCERS="/vol/COMPEPIWS/groups/wgbs2/methylme/integrative_analysis_deeptools_ROI/kidney_ChromHMM_enhancers.bed"
+LIVER_PMDS="/vol/COMPEPIWS/groups/wgbs2/methylme/integrative_analysis/integrative_analysis_deeptools_ROI/liver_PMDs.bed"
+KIDNEY_PMDS="/vol/COMPEPIWS/groups/wgbs2/methylme/integrative_analysis/integrative_analysis_deeptools_ROI/kidney_PMDs.bed"
+LIVER_ENHANCERS="/vol/COMPEPIWS/groups/wgbs2/methylme/integrative_analysis/integrative_analysis_deeptools_ROI/liver_ChromHMM_enhancers.bed"
+KIDNEY_ENHANCERS="/vol/COMPEPIWS/groups/wgbs2/methylme/integrative_analysis/integrative_analysis_deeptools_ROI/kidney_ChromHMM_enhancers.bed"
 
 # New output directory: this does not overwrite the aggregate-track results.
 OUTROOT="/vol/COMPEPIWS/groups/wgbs2/methylme/integrative_analysis/integrative_analysis_deeptools_ROI/ATACseq2_14_5_REP1"
