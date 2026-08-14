@@ -782,13 +782,20 @@ Back to plot from the previous section, there is no clear correlation always bet
 
 ![](./assets/promoter_methylation_vs_accessibility_scatter.png)
 
-### Integrating ChIP-seq
-The next rational step is to also include the chromatin labels from the segmentation tool `ChromHMM`, so for each tissue, this tool gives chromatin states for regions. I was more intersted in the lower right regions, the liver active regions which was also accessible in liver. While I did expect them to be labeled as active promoters in liver samples or heterochromatin in kideny sample, it shows mostly as active enhancers, my interpretation is probably `RnBeads` promoter regions also include other DNA regulatory regions but it was very acceptable because most of them are labeled as active enhancers in liver. This is produced by `scripts/intg_analysis/promoters_wgbs_atac_chip_integration.r`. 
+## Integrating ChIP-seq
+The next rational step is to also include the chromatin labels from the segmentation tool `ChromHMM`, so for each tissue, this tool gives chromatin states for regions. I was more intersted in the lower right regions, the liver active regions which was also accessible in liver. While I did expect them to be labeled as active promoters in liver samples or heterochromatin in kideny sample, it shows mostly as active enhancers, my interpretation is probably `RnBeads` promoter regions also include other DNA regulatory regions but it was very acceptable because most of them are labeled as active enhancers in liver. This is produced by `scripts/intg_analysis/promoters_wgbs_atac_chip_integration.r`. One notiable observation is also the bivalent promoter regions, so we know such regions exhibits both active and repressive histone marks, from the plots below we can also see the don't differ in methylation levels and their regulation dynamics is controlled by their accessibility. 
 ![](./assets/promoter_methylation_vs_accessibility_chromhmm_grid_kidney.png)
 ![](./assets/promoter_methylation_vs_accessibility_chromhmm_grid_liver.png)
 
+## Integrating RNA-seq
+To annotate the differentially methylated regions with genes, we used `bedtools closest`, note that many DMRs can map to single gene, in that case we take the median methylation value across all DMRs. Then we used hierarical clustering by anchoring on gene expression. Shown in the heatmap below the main question was what is the correlation between the methylation values of genes and their corresponding gene expression. We applied a cutoff of adj p.value <= 0.05 and |methylation mean diff| > 0.2, for gene expression data, we applied logfc > 1 and fdr <= 0.05. produced with `scripts/intg_analysis/plot_wgbs_rnaseq_gene_heatmaps.R`<br>
 
+We can see a clear correlation which was also observed from the start of the analysis, global lower methylation in liver but also higher expression in mystery regions. 
 
+![](./assets/mystery_regions_heatmap.png)
 
+Using a similar strategy as before we used also the promoter regions only, with the same cutoffs, we see a high resolution correlation between the two modalities. Moreof, the highly expressed genes are very liver specific like the cyp family of genes which are responisble for drug metabolism shown in the figure below, this is produced by `scripts/intg_analysis/plot_wgbs_rnaseq_gene_heatmaps_promoter_only.R`
+
+![](./assets/promoters_heatmap.png)
 
 
