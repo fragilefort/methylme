@@ -20,6 +20,8 @@ HackMD Tutorial: https://hackmd.io/c/tutorials/%2FUFLeoGd_SmGy8acWOTs6JA
 - The script mentioned in here are suppose to run in the core environment on the elixir nodes
 - All the paths in the script are absolute path so it can be run from anywhere as long as you are on elexir servers where the data are hosted
 - We will not attach any code snippets here, code are hosted here: [https://github.com/fragilefort/methylme](https://github.com/fragilefort/methylme). Most scripts are in the scripts directory but you can use any fuzzy findig tool (simply grep) to find any script mentioned in here
+- We have an issue of rendering plots with HackMD, so we would forward you to the github repo mentioned for the rendered figures.
+
 # Day 1
 
 ### System arc
@@ -761,3 +763,32 @@ Promoters are generally shared regulatory units required for transcription initi
 The inverse relationship between WGBS methylation and ATAC-seq accessibility is especially clear at regulatory elements. Promoters and enhancers that are accessible tend to be locally hypomethylated, while methylated chromatin tends to be less accessible. This relationship is an association rather than proof that methylation alone causes accessibility changes; both can be shaped by transcription-factor binding and chromatin-remodeling activity.
 
 ---
+
+## Integrative analysis from a general presepective
+### DNA methylation and chromatin accessibility
+So first we wanted to know the general correlation between DNA methylation and chromatin accessibility. Using a scatter plot produced by `scripts/intg_analysis/plot_methylation_acc.r`, we see the expected correlation for such data: higher methylation correspond to low accessibility, but the correlation score is not perfect and it is because at low methylation levels, there is much correlation ![Methylation correlation with chromatin accessibility](./assets/mystery_regions_methylation_vs_accessibility_two_panel.png) <br>
+
+### Directionality
+We had another question which is what about the directionality of this correlation? This is better explained by the figure below, we divided these rigions into 4 quarters, regions that have atypical behavior (doesn't match the correlation plot from previous section). And there are also the regions that are kidney active and liver active. This was produced using `scripts/intg_analysis/plot_methylation_acc.r` <br>
+
+
+We can see that most of the regions are liver active, which means are more methylated in kideny and have a closed chromatin state. 
+
+![](./assets/methylation_vs_accessibility_scatter.png)
+
+### Using promoter regions
+
+Back to plot from the previous section, there is no clear correlation always between the two modalities. So we wanted to filter for regions that have more clear methylation state biologically which are promoter. In general, promoters that have low methylation are active promoters, so we expect these regions also to be accessible if they are active. So by subsetting the regions to only the promoter regions and plotting it again `scripts/intg_analysis/plot_promoter_quadrants.r`, We can see most promoter regions follow this typical behavior, promoters that are methylated more in kideny are less accessible. 
+
+![](./assets/promoter_methylation_vs_accessibility_scatter.png)
+
+### Integrating ChIP-seq
+The next rational step is to also include the chromatin labels from the segmentation tool `ChromHMM`, so for each tissue, this tool gives chromatin states for regions. I was more intersted in the lower right regions, the liver active regions which was also accessible in liver. While I did expect them to be labeled as active promoters in liver samples or heterochromatin in kideny sample, it shows mostly as active enhancers, my interpretation is probably `RnBeads` promoter regions also include other DNA regulatory regions but it was very acceptable because most of them are labeled as active enhancers in liver. This is produced by `scripts/intg_analysis/promoters_wgbs_atac_chip_integration.r`. 
+![](./assets/promoter_methylation_vs_accessibility_chromhmm_grid_kidney.png)
+![](./assets/promoter_methylation_vs_accessibility_chromhmm_grid_liver.png)
+
+
+
+
+
+
