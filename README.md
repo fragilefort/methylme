@@ -16,6 +16,10 @@ tags: wgbs
 HackMD Tutorial: https://hackmd.io/c/tutorials/%2FUFLeoGd_SmGy8acWOTs6JA
 ---
 
+# General notes 
+- The script mentioned in here are suppose to run in the core environment on the elixir nodes
+- All the paths in the script are absolute path so it can be run from anywhere as long as you are on elexir servers where the data are hosted
+- We will not attach any code snippets here, code are hosted here: [https://github.com/fragilefort/methylme](https://github.com/fragilefort/methylme). Most scripts are in the scripts directory but you can use any fuzzy findig tool (simply grep) to find any script mentioned in here
 # Day 1
 
 ### System arc
@@ -39,29 +43,31 @@ There is one master node and five worker nodes. The table above shows the availa
 
 <img width="1895" height="538" alt="Screenshot 2026-07-30 114751" src="https://github.com/user-attachments/assets/d62ed496-f21b-4eac-9161-7f3cfff14322" />
 
-#### Number of lines
+```
+Number of lines
 
 58239
 
-#### Number of exon entries
+Number of exon entries
 
 24556
 
-#### Number of exons longer than 1000 bp
+Number of exons longer than 1000 bp
 
 1663
 
-#### Number of exons where gene_id is "Sox17"
+Number of exons where gene_id is "Sox17"
 
 0
 
-#### Count of exons in chr2
+Count of exons in chr2
 
 0
-
-#### Frequency of each feature type in column 3
 
 ```
+
+```
+# Frequency of each feature type in column 3
    2260 3UTR
    3363 5UTR
   21278 CDS
@@ -71,9 +77,10 @@ There is one master node and five worker nodes. The table above shows the availa
    2497 transcript
 ```
 
-#### Example lines from the new sorted file
 
 ```
+# Example lines from the new sorted file
+
 chr18   refGene 3UTR    10064401        10066047        .       -       .       gene_id "Rock1"; transcript_id "NM_009071"; exon_number "1"; exon_id "NM_009071.1"; gene_name "Rock1";
 chr18   refGene 3UTR    10560484        10562941        .       +       .       gene_id "Greb1l"; transcript_id "NM_001083628"; exon_number "33"; exon_id "NM_001083628.33"; gene_name "Greb1l";
 chr18   refGene 3UTR    10566512        10567498        .       -       .       gene_id "Esco1"; transcript_id "NM_001081222"; exon_number "1";
