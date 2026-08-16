@@ -405,11 +405,9 @@ Four of the top five promoters (5830416P10Rik, Olfr1425, Anxa1, and Ms4a6c) are 
 
 - Yes we can see that also like density plot, we have a higher methylation level for kidneys with respect to the liver.
 
-## 9
-
-## 10
-
-## 11
+## Comparing methylation values between CpGs and mystery regions
+This violin plot was produced using `rnb_beads/exp_analysis_scripts/violin_dist.r`, from the plot below we can see the expected behaviour, a skew towards higher methylaton values in case of CpGs sites averaged across all samples vs more evenly distributed methyaltion values in case of mystery regions
+![](./assets/violin_plot_cpg_vs_mystery.png)
 
 ## Comparing the segmentation to the raw methylation signal:
 
