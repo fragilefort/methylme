@@ -409,8 +409,13 @@ Four of the top five promoters (5830416P10Rik, Olfr1425, Anxa1, and Ms4a6c) are 
 This violin plot was produced using `rnb_beads/exp_analysis_scripts/violin_dist.r`, from the plot below we can see the expected behaviour, a skew towards higher methylaton values in case of CpGs sites averaged across all samples vs more evenly distributed methyaltion values in case of mystery regions
 ![](./assets/violin_plot_cpg_vs_mystery.png)
 
-## Comparing the segmentation to the raw methylation signal:
+## Size and methylation values across different segmentation labels
+This was produced by these scripts: `rnb_beads/exp_analysis_scripts/violin_segmentation.r`, `rnb_beads/exp_analysis_scripts/merge_bytissue.r`
 
+![](./assets/segmentation_categories_methylation.png)
+![](./assets/segmentation_category_sizes_violin.png)
+
+## Comparing the segmentation to the raw methylation signal:
 
 <img width="1803" height="697" alt="task 3 3 12" src="https://github.com/user-attachments/assets/970ad10a-1b1f-4080-87b2-01c2e0dd5016" />
 
